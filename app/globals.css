@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ND-First Design System — Hyperfocus Zone */
+:root {
+  --hf-bg: #F5F5F5;
+  --hf-text: #1F1F1F;
+  --hf-blue: #0066CC;
+  --hf-orange: #CC6600;
+  --hf-green: #006633;
+  --hf-purple: #663366;
+  --hf-error: #DD4400;
+  --hf-spacing: 8px;
+  --hf-line-height: 1.8;
+  --hf-letter-spacing: 0.12em;
+}
+
+body {
+  background-color: var(--hf-bg);
+  color: var(--hf-text);
+  line-height: var(--hf-line-height);
+  font-size: 17px;
+}
+
+/* Focus rings — always visible, never hidden */
+*:focus-visible {
+  outline: 3px solid var(--hf-blue);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for vestibular disorders */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.nd-card {
+  @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow;
+}
+
+.nd-btn-primary {
+  @apply bg-hf-blue text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors focus-visible:ring-2 focus-visible:ring-hf-blue focus-visible:ring-offset-2;
+}
+
+.nd-btn-secondary {
+  @apply border-2 border-hf-blue text-hf-blue font-semibold px-6 py-3 rounded-xl hover:bg-hf-blue hover:text-white transition-colors;
+}
+
+.nd-section {
+  @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16;
+}
