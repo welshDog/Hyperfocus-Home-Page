@@ -2,17 +2,11 @@
 """
 🔥 TEEMILL BACKUP SCRIPT — Hyperfocus Zone
 Author: WelshDog (Lyndon Williams)
-Usage: python teemill_backup.py --token YOUR_TOKEN --store hyperfocus-mode
+Usage: python teemill_backup.py --store hyperfocus-mode
+       python teemill_backup.py --store hyperfocus-mode --token YOUR_TOKEN
        python teemill_backup.py --store hyperfocus-mode --dry-run
 
-What this does:
-  1. Scrapes all 26 blog posts → saves as .md files
-  2. Scrapes all 17 store pages → saves as .md files
-  3. Pulls product data via Teemill API → saves CSV + JSON
-  4. Downloads ALL images (blogs, pages, products)
-  5. Extracts SEO metadata from every page
-  6. Generates manifest.csv + missing-items.txt
-  7. Prints final summary + coloured status
+Real slugs verified from live blog index on 22 June 2026.
 """
 
 import argparse
@@ -73,55 +67,71 @@ logging.basicConfig(
 )
 log = logging.getLogger("teemill_backup")
 
-# ── All 26 blogs (slug → title) ──────────────────────────────────────────────
+# ── REAL blog slugs — verified from live blog index 22 June 2026 ──────────────────────
 BLOGS = [
-    ("welcome-to-hyperfocus-mode",      "Welcome to Hyperfocus Mode: Unique Minds, Creative Paths"),
-    ("the-power-of-hyperfocus",         "The Power of Hyperfocus"),
-    ("family-friendship-mental-health", "Family, Friendship, and Mental Health"),
-    ("overcoming-adversity",            "Overcoming Adversity and Redefining My Path"),
-    ("childhood-of-wonder",             "A Childhood of Wonder and Exploration"),
-    ("realities-of-dyslexia-adhd",      "The Realities of Living with Dyslexia and ADHD"),
-    ("living-undiagnosed",              "Living Undiagnosed – My Journey to Understanding ADHD in Adulthood"),
-    ("raising-adhd-awareness",          "Raising ADHD Awareness – Why I Create Content About Neurodiversity"),
-    ("coping-mechanisms-self-discovery","Coping Mechanisms and Self-Discovery"),
-    ("finding-my-voice",                "Finding My Voice Through Creativity"),
-    ("looking-to-the-future",           "Looking to the Future"),
-    ("reflections-on-life",             "Reflections on Life and Society"),
-    ("joy-of-learning",                 "The Joy of Learning and Reinvention"),
-    ("creativity-game-design",          "Creativity and the World of Game Design"),
-    ("breaking-myths-dyslexia",         "Breaking the Myths: What Dyslexia Really Is"),
-    ("dyslexia-strengths",              "Dyslexia: Understanding the Strengths Behind the Struggles"),
-    ("dyslexia-types",                  "The Importance of Understanding Dyslexia Types"),
-    ("neurodiversity-celebration",      "Neurodiversity: A Celebration of Different Minds"),
-    ("ai-tools-neurodivergent",         "AI Tools for Neurodivergent Developers"),
-    ("vibe-coding",                     "Vibe Coding?"),
-    ("hyper-coding",                    "Hyper Coding?"),
-    ("best-free-ai-coding-tools-2025",  "Best Free AI Coding Tools in 2025"),
-    ("openai-new-stuff",                "OpenAI's New Stuff"),
-    ("nfts-next-generation",            "NFT's The Next Tech Generation"),
-    ("what-is-cryptocurrencies",        "What is Cryptocurrencies (Do You Really Know)"),
-    ("lets-talk-crypto",               "Lets Talk about Crypto"),
+    ("vibe-code-from-intuition-to-ai-and-the-hyperfocus-future",
+     "Vibe Code: From Intuition to AI and the Hyperfocus Future"),
+    ("inclusive-ai-coding-tools-for-neurodivergent-developers",
+     "Inclusive AI Coding Tools for Neurodivergent Developers"),
+    ("the-best-free-ai-coding-tools-in-2025",
+     "The Best Free AI Coding Tools in 2025"),
+    ("the-power-of-hyperfocus",
+     "The Power of Hyperfocus"),
+    ("family-friendship-and-mental-health",
+     "Family, Friendship, and Mental Health"),
+    ("overcoming-adversity-and-redefining-my-path",
+     "Overcoming Adversity and Redefining My Path"),
+    ("creativity-and-the-world-of-game-design",
+     "Creativity and the World of Game Design"),
+    ("reflections-on-life-and-society",
+     "Reflections on Life and Society"),
+    ("coping-mechanisms-and-self-discovery",
+     "Coping Mechanisms and Self-Discovery"),
+    ("the-joy-of-learning-and-reinvention",
+     "The Joy of Learning and Reinvention"),
+    ("finding-my-voice-through-creativity",
+     "Finding My Voice Through Creativity"),
+    ("looking-to-the-future",
+     "Looking to the Future"),
+    ("breaking-the-myths-what-dyslexia-really-is",
+     "Breaking the Myths: What Dyslexia Really Is"),
+    ("the-realities-of-living-with-dyslexia-and-adhd",
+     "The Realities of Living with Dyslexia and ADHD"),
+    ("the-importance-of-understanding-dyslexia-types",
+     "The Importance of Understanding Dyslexia Types"),
+    ("neurodiversity-a-celebration-of-different-minds",
+     "Neurodiversity: A Celebration of Different Minds"),
+    ("dyslexia-understanding-the-strengths-behind-the-struggles",
+     "Dyslexia: Understanding the Strengths Behind the Struggles"),
+    ("living-undiagnosed-my-journey-to-understanding-adhd-in-adulthood",
+     "Living Undiagnosed – My Journey to Understanding ADHD in Adulthood"),
+    ("raising-adhd-awareness-why-i-create-content-about-neurodiversity",
+     "Raising ADHD Awareness – Why I Create Content About Neurodiversity"),
+    ("a-childhood-of-wonder-and-exploration",
+     "A Childhood of Wonder and Exploration"),
+    ("welcome-to-hyperfocus-mode-unique-minds-creative-paths",
+     "Welcome to Hyperfocus Mode: Unique Minds, Creative Paths"),
+    ("https-cryptocurrencyfacts-com-how-does-cryptocurrency-work-for-beginners",
+     "What is Cryptocurrencies (Do You Really Know)"),
+    ("nfts-the-next-tec-generation",
+     "NFT's The Next Tech Generation"),
+    ("open-a-is-new-stuff",
+     "OpenAI's New Stuff"),
+    ("lets-talk-about-crypto",
+     "Lets Talk about Crypto"),
+    ("navigating-the-minds-maze-dyslexia-unveiled-by-welsh-dog",
+     "Navigating the Mind's Maze: Dyslexia Unveiled by WelshDog"),
 ]
 
-# ── All 17 pages (path → label) ──────────────────────────────────────────────
+# ── REAL page paths — verified from live nav + footer ────────────────────────────────
 PAGES = [
     ("/",                                    "homepage"),
-    ("/collection/hyperfocus-mode-zone/",    "hyperfocus-mode-zone"),
-    ("/collection/neurovariance/",           "neurovariance"),
-    ("/collection/broski-clan-wear/",        "broski-clan-wear"),
-    ("/collection/pi-network-nft-zone/",     "pi-network-nft-zone"),
-    ("/collection/hyperfocus-mode-nft-zone/","hyperfocus-mode-nft-zone"),
-    ("/collection/welshdog-referrals/",      "welshdog-referrals"),
-    ("/collection/xdwelshdog-wear/",         "xdwelshdog-wear"),
-    ("/collection/planting-trees/",          "planting-trees"),
-    ("/collection/hyperfocus-studio-dream/", "hyperfocus-studio-dream"),
-    ("/collection/the-funny-side-of-welsh/", "the-funny-side-of-welsh"),
-    ("/collection/neurovariance-zone/",      "neurovariance-zone"),
-    ("/collection/hyperfocus-mode-stickers/","hyperfocus-mode-stickers"),
-    ("/collection/gen-x-rules/",             "gen-x-rules"),
+    ("/bb771637/",                           "hyperfocus-mode-zone"),
+    ("/210f4fc6/",                           "neurovariance-zone"),
+    ("/touchofwelsh/",                       "touch-of-welsh-zone"),
+    ("/collection/full-mug-of-tee-zone/",   "mug-of-tee-zone"),
     ("/blog/",                               "blog-index"),
-    ("/collection/hyperfocus-3d-printing-zone/",  "3d-printing-zone"),
-    ("/collection/hyperfocus-mode-crypto-zone/",  "crypto-zone"),
+    ("/collection/hyperfocus-mode-stickers/","hyperfocus-mode-stickers"),
 ]
 
 # ── HTTP helpers ─────────────────────────────────────────────────────────────
@@ -147,7 +157,6 @@ def fetch(url, retries=3, delay=2):
     return None
 
 def download_image(img_url, dest_dir, dry_run=False):
-    """Download an image and return local filename or None."""
     try:
         parsed = urlparse(img_url)
         filename = Path(parsed.path).name or "image.jpg"
@@ -168,7 +177,6 @@ def download_image(img_url, dest_dir, dry_run=False):
     return None
 
 def extract_seo(soup, url):
-    """Extract meta title, description, og:image, canonical."""
     def meta(name=None, prop=None):
         tag = soup.find('meta', attrs={'name': name} if name else {'property': prop})
         return tag.get('content', '').strip() if tag else ''
@@ -183,7 +191,7 @@ def extract_seo(soup, url):
 
 # ── 1. BLOG BACKUP ───────────────────────────────────────────────────────────
 def backup_blogs(store_url, dry_run, manifest_rows, missing):
-    head("PHASE 1 — Blog Backup (26 posts)")
+    head(f"PHASE 1 — Blog Backup ({len(BLOGS)} posts)")
     seo_rows = []
 
     for slug, title in tqdm(BLOGS, desc="Blogs"):
@@ -200,7 +208,6 @@ def backup_blogs(store_url, dry_run, manifest_rows, missing):
         soup = BeautifulSoup(r.text, 'html.parser')
         seo_rows.append(extract_seo(soup, url))
 
-        # Try common blog content selectors
         content_el = (
             soup.find('article') or
             soup.find(class_=re.compile(r'blog.?content|post.?content|entry.?content', re.I)) or
@@ -209,7 +216,6 @@ def backup_blogs(store_url, dry_run, manifest_rows, missing):
         body_html = str(content_el) if content_el else r.text
         body_md   = md(body_html, heading_style='ATX', bullets='-')
 
-        # Download images
         imgs_saved = 0
         if not dry_run:
             for img in soup.find_all('img', src=True):
@@ -217,7 +223,6 @@ def backup_blogs(store_url, dry_run, manifest_rows, missing):
                 if download_image(img_url, IMAGES_DIR/"blogs"):
                     imgs_saved += 1
 
-        # Write markdown file
         frontmatter = (
             f"---\n"
             f"title: \"{title}\"\n"
@@ -241,7 +246,7 @@ def backup_blogs(store_url, dry_run, manifest_rows, missing):
 
 # ── 2. PAGE BACKUP ───────────────────────────────────────────────────────────
 def backup_pages(store_url, dry_run, manifest_rows, missing):
-    head("PHASE 2 — Page Backup (17 pages)")
+    head(f"PHASE 2 — Page Backup ({len(PAGES)} pages)")
     seo_rows = []
 
     for path, label in tqdm(PAGES, desc="Pages"):
@@ -311,12 +316,10 @@ def backup_products(store_url, token, dry_run, manifest_rows, missing):
         ok(f"Found {len(products)} products via API")
 
         if not dry_run:
-            # Save JSON
             json_file = PRODUCTS_DIR / "products.json"
             json_file.write_text(json.dumps(products, indent=2), encoding='utf-8')
             ok(f"Saved: {json_file}")
 
-            # Save CSV
             csv_file = PRODUCTS_DIR / "products.csv"
             if products:
                 keys = list(products[0].keys())
@@ -326,7 +329,6 @@ def backup_products(store_url, token, dry_run, manifest_rows, missing):
                     w.writerows(products)
                 ok(f"Saved: {csv_file}")
 
-            # Download product images
             imgs_saved = 0
             for p in tqdm(products, desc="Product images"):
                 for key in ['image', 'image_url', 'thumbnail', 'photo']:
@@ -392,7 +394,7 @@ def main():
 
     print("\n" + "="*55)
     print("  🔥 WELSHDOG TEEMILL BACKUP — HYPERFOCUS ZONE")
-    print("  Built by a dyslexic Welsh dev. Zero apologies.")
+    print("  Real slugs. Real data. Zero apologies.")
     print("="*55)
     info(f"Store:   {store_url}")
     info(f"Output:  {BASE_DIR.resolve()}")
@@ -405,26 +407,24 @@ def main():
     missing       = []
     all_seo       = []
 
-    # Run all phases
     all_seo += backup_blogs(store_url, args.dry_run, manifest_rows, missing)
     all_seo += backup_pages(store_url, args.dry_run, manifest_rows, missing)
     backup_products(store_url, args.token, args.dry_run, manifest_rows, missing)
     save_seo(all_seo)
     save_manifest(manifest_rows, missing)
 
-    # ── Final summary ────────────────────────────────────────────────────────
-    ok_count     = sum(1 for r in manifest_rows if r[-1] == 'OK')
-    miss_count   = len(missing)
-    blog_count   = sum(1 for r in manifest_rows if r[0]=='blog' and r[-1]=='OK')
-    page_count   = sum(1 for r in manifest_rows if r[0]=='page' and r[-1]=='OK')
-    prod_count   = sum(1 for r in manifest_rows if r[0]=='product' and r[-1]=='OK')
-    total_imgs   = sum(int(r[5]) for r in manifest_rows if str(r[5]).isdigit())
+    ok_count   = sum(1 for r in manifest_rows if r[-1] == 'OK')
+    miss_count = len(missing)
+    blog_count = sum(1 for r in manifest_rows if r[0]=='blog' and r[-1]=='OK')
+    page_count = sum(1 for r in manifest_rows if r[0]=='page' and r[-1]=='OK')
+    prod_count = sum(1 for r in manifest_rows if r[0]=='product' and r[-1]=='OK')
+    total_imgs = sum(int(r[5]) for r in manifest_rows if str(r[5]).isdigit())
 
     print("\n" + "="*55)
     print("  🏁 BACKUP COMPLETE — WELSHDOG OUT")
     print("="*55)
-    print(f"  📝 Blogs saved:    {blog_count} / 26")
-    print(f"  📄 Pages saved:    {page_count} / 17")
+    print(f"  📝 Blogs saved:    {blog_count} / {len(BLOGS)}")
+    print(f"  📄 Pages saved:    {page_count} / {len(PAGES)}")
     print(f"  🛍️  Products saved: {prod_count}")
     print(f"  🖼️  Images saved:   {total_imgs}")
     print(f"  ✅ Total OK:       {ok_count}")
