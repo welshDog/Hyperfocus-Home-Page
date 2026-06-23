@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
+import { ogImage } from '@/lib/og'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -42,11 +43,13 @@ export const metadata: Metadata = {
     siteName: 'WelshDog Designs',
     type: 'website',
     locale: 'en_GB',
+    images: [ogImage('Built for brains that don’t switch off')],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'WelshDog Designs',
     description: 'Built for brains that don’t switch off.',
+    images: [ogImage('Built for brains that don’t switch off')],
   },
 }
 

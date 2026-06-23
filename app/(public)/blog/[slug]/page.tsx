@@ -8,6 +8,7 @@ import { ShareButtons } from '@/components/blog/ShareButtons'
 import { SubscribeForm } from '@/components/blog/SubscribeForm'
 import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/blog'
 import { formatDate } from '@/lib/utils'
+import { ogImage } from '@/lib/og'
 
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }))
@@ -23,7 +24,12 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt,
-    openGraph: { title: post.title, description: post.excerpt, type: 'article' },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      images: [ogImage(post.title, post.category)],
+    },
   }
 }
 

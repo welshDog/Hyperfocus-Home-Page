@@ -7,6 +7,7 @@ import { ProductGallery } from '@/components/shop/ProductGallery'
 import { BuyButton } from '@/components/shop/BuyButton'
 import { getProductBySlug } from '@/lib/products'
 import { formatPrice } from '@/lib/utils'
+import { ogImage } from '@/lib/og'
 
 export const revalidate = 60
 
@@ -23,7 +24,9 @@ export async function generateMetadata({
     openGraph: {
       title: product.name,
       description: product.description ?? undefined,
-      images: product.images?.length ? [product.images[0]] : undefined,
+      images: product.images?.length
+        ? [product.images[0]]
+        : [ogImage(product.name, product.category)],
     },
   }
 }
