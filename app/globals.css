@@ -2,53 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ND-First Design System — Hyperfocus Zone */
-:root {
-  --hf-bg: #F5F5F5;
-  --hf-text: #1F1F1F;
-  --hf-blue: #0066CC;
-  --hf-orange: #CC6600;
-  --hf-green: #006633;
-  --hf-purple: #663366;
-  --hf-error: #DD4400;
-  --hf-spacing: 8px;
-  --hf-line-height: 1.8;
-  --hf-letter-spacing: 0.12em;
-}
+/* WelshDog Designs — design system base
+   Primary accent: Hyperfocus teal #01696f
+   Fonts: Space Grotesk (headings) + Inter (body) loaded via next/font */
 
-body {
-  background-color: var(--hf-bg);
-  color: var(--hf-text);
-  line-height: var(--hf-line-height);
-  font-size: 17px;
-}
+@layer base {
+  :root {
+    --ring: 1 105 111; /* brand teal as rgb for focus rings */
+  }
 
-/* Focus rings — always visible, never hidden */
-*:focus-visible {
-  outline: 3px solid var(--hf-blue);
-  outline-offset: 2px;
-}
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
 
-/* Reduce motion for vestibular disorders */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+  body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-bold tracking-tight;
+  }
+
+  /* Neurodivergent-friendly readability: relaxed body line-height */
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* Accessible focus ring across the app */
+  :focus-visible {
+    outline: 2px solid rgb(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Respect reduced-motion preference (vestibular safety) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-.nd-card {
-  @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow;
-}
-
-.nd-btn-primary {
-  @apply bg-hf-blue text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors focus-visible:ring-2 focus-visible:ring-hf-blue focus-visible:ring-offset-2;
-}
-
-.nd-btn-secondary {
-  @apply border-2 border-hf-blue text-hf-blue font-semibold px-6 py-3 rounded-xl hover:bg-hf-blue hover:text-white transition-colors;
-}
-
-.nd-section {
-  @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16;
+@layer utilities {
+  /* Touch target helper — min 44x44px per design rules */
+  .touch-target {
+    @apply min-h-11 min-w-11;
+  }
 }

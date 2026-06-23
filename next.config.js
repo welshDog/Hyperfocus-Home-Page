@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['hyperfocus-mode.teemill.com', 'teemill.com'],
+    remotePatterns: [
+      { protocol: 'https', hostname: '*.supabase.co' },
+      { protocol: 'https', hostname: 'hyperfocus-mode.teemill.com' },
+      { protocol: 'https', hostname: 'teemill.com' },
+    ],
   },
 }
 
