@@ -31,9 +31,9 @@
 | Task | Status |
 |---|---|
 | Task 1 — Pricing & Product Activation | ✅ DONE — 2026-06-24 |
-| Task 2 — Homepage Featured Products Strip | ⏳ UP NEXT |
-| Task 3 — Shop Page Polish | ⏳ Queued |
-| Task 4 — Content Polish Pass | ⏳ Queued |
+| Task 2 — Homepage Featured Products Strip | ✅ DONE — 2026-06-24 |
+| Task 3 — Shop Page Polish | ✅ DONE — 2026-06-24 |
+| Task 4 — Content Polish Pass | ⏳ UP NEXT |
 | Task 5 — Admin UX Improvements | ⏳ Queued |
 | Task 6 — Agents Lab Wiring | ⏳ Queued |
 | Task 7 — Analytics & Error Monitoring | ⏳ Queued |
@@ -55,26 +55,25 @@ It's a **neurodivergent-first shop and blog** built for brains that don't switch
 
 ---
 
-## 🚦 Current State (READ THIS FIRST)
+## 🚦 Current State
 
 | Area | Status |
 |---|---|
-| Home | ✅ Strong brand, ❌ No featured product strip |
-| Shop `/shop` | ✅ 19 active products with real prices |
-| Blog `/blog` | ✅ Posts exist, ⚠️ Needs content polish + featured section |
-| About `/about` | ✅ Good, ⚠️ Long paragraphs, minor grammar bumps |
-| White-label `/white-label` | ✅ Good structure, ❌ TBD prices, no tier table |
-| Contact `/contact` | ✅ Works, ⚠️ Better "what happens next" line + footer cleanup |
-| Mission Control `/admin` | ✅ Works, ⚠️ Stray debug text, stats could be richer |
-| Orders/Leads/Subscribers | ✅ Pages exist, ❌ Empty states are bare |
-| Agents Lab `/admin/agents` | ✅ Looks cool, ❌ No agent triggers a visible action |
+| Home | ✅ Hero strong, ✅ Featured products strip live |
+| Shop `/shop` | ✅ 19 active products, sticky filters, ND-first empty states |
+| Blog `/blog` | ⚠️ Needs featured strip + content polish |
+| About `/about` | ⚠️ Long paragraphs, minor grammar bumps |
+| White-label `/white-label` | ❌ Real prices now confirmed — replace TBD + build tier table |
+| Contact `/contact` | ⚠️ Missing "reply in 1–2 days" line + footer cleanup |
+| Mission Control `/admin` | ⚠️ Stray debug text, stats could be richer |
+| Orders/Leads/Subscribers | ❌ Empty states are bare |
+| Agents Lab `/admin/agents` | ❌ No agent triggers a visible action |
 
 ---
 
 ## ⚠️ DB Column Name — CRITICAL
 
 The column is **`active`** (boolean) — NOT `is_active`.
-Everywhere this brief says `is_active`, read it as `active`.
 The app code already uses `active` correctly. Don't change the code.
 
 ---
@@ -82,31 +81,27 @@ The app code already uses `active` correctly. Don't change the code.
 ## ~~Task 1 — Pricing & Product Activation~~ ✅ DONE
 
 All 19 products updated directly in Supabase on 2026-06-24.
-Prices, stock, descriptions, and active = true all set.
-Do not re-run this task.
+Prices, stock, descriptions, and active = true all set. Do not re-run.
 
 ---
 
-## Task 2 — Homepage Featured Products Strip
+## ~~Task 2 — Homepage Featured Products Strip~~ ✅ DONE
 
-1. Query `active = true` products from Supabase.
-2. Render a **3–4 card "Featured Products" strip** under the hero.
-3. Each card: image (or placeholder), name, price, category tag.
-4. If no active products: *"First drops coming soon — check back shortly."*
-5. Add line under hero: *"3D prints, mugs, gifts, and bundles made in South Wales."*
+Featured products strip live under hero. "3D prints, mugs, gifts, and bundles made in South Wales." line added.
 
 ---
 
-## Task 3 — Shop Page Polish
+## ~~Task 3 — Shop Page Polish~~ ✅ DONE
 
-1. Product grid with name, price, category, action.
-2. Category filters default to "All" — never show empty grid unless truly no products.
-3. Empty state: *"No products yet — they'll appear here once activated in Mission Control."*
-4. Sticky filters on mobile + desktop.
+- Persistent "View →" cue on cards (brand-teal on hover, touch-friendly)
+- Sticky category filters at top-16, clears navbar, mobile + desktop
+- ND-first empty states: "No products yet — they'll appear here once activated in Mission Control."
+- Category nudge: friendly "try another category" copy
+- Default-to-All / never-empty logic confirmed correct from Phase 1
 
 ---
 
-## Task 4 — Content Polish Pass
+## Task 4 — Content Polish Pass ⏳ UP NEXT
 
 ### Blog `/blog`
 - 3–5 card "Featured Posts" strip at top.
@@ -118,16 +113,19 @@ Do not re-run this task.
 - Fix: *"Made with in South Wales"* → *"Made in South Wales, with care."*
 
 ### White-label `/white-label`
-- Replace all TBD with real prices or ranges (e.g. "from £X").
-- Add tier comparison table:
 
-| Tier | You get | Timeline | Support |
-|---|---|---|---|
-| Starter | ... | ... | ... |
-| Pro | ... | ... | ... |
-| Done For You | ... | ... | ... |
+> ✅ **Prices confirmed by Lyndz on 2026-06-24 — use these exactly:**
 
+| Tier | Price | What they get | Timeline | Support |
+|---|---|---|---|---|
+| **Starter** | **£297 one-off** | Shop + blog, self-managed, you set it up | 1–2 weeks | Email |
+| **Pro** | **£597 one-off** | Full setup + custom branding + 30 days support | 2–3 weeks | Priority email |
+| **Done For You** | **£1,497 one-off** | Everything built, launched, handed over | 3–4 weeks | 30-day handholding |
+
+- Replace ALL instances of "TBD" with real prices from the table above.
+- Build the tier comparison table using the data above.
 - CTAs: **"Book a demo"** (primary) + **"Explore pricing"** (secondary).
+- Do NOT invent any other prices — these are the only confirmed ones.
 
 ### Contact `/contact`
 - Add: *"I'll read this personally and usually reply within 1–2 working days."*
@@ -218,7 +216,7 @@ Orders only get recorded if a webhook catches `checkout.session.completed`.
 ## ✅ Done When...
 
 - [x] `/shop` shows active products with real prices + categories ✅
-- [ ] Homepage has a featured products strip
+- [x] Homepage has a featured products strip ✅
 - [ ] White-label has real tier prices + comparison table
 - [ ] All admin empty states have helpful, friendly copy
 - [ ] At least one Agents Lab agent does something visible
