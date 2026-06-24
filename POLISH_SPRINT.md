@@ -3,187 +3,129 @@
 
 ---
 
-## 🧠 HYPER-SKILLs Guardrails — Read These First
+## 🎉 SPRINT COMPLETE — 2026-06-24
 
-> These are mandatory behaviour constraints from the [HYPER-SKILLs vault](https://github.com/welshDog/HYPER-SILLs-By-WelshDog).
-> Read each file **before** writing a single line of code.
-> Apply them throughout the entire sprint — no exceptions.
-
-| Skill | File | Apply When |
-|---|---|---|
-| 💚 **MERCY MESSAGE** (HS-069) | [`broski/ND_FIRST_ERROR_MESSAGES_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/broski/ND_FIRST_ERROR_MESSAGES_v1.md) | Every empty state, error message, and toast |
-| 📐 **THE STYLE CODEX** (HS-084) | [`dev/CODE_STYLE_STANDARDS_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/dev/CODE_STYLE_STANDARDS_v1.md) | All TS/React components — no exceptions |
-| ✅ **THE GATEKEEPER** (HS-076) | [`dev/PRE_COMMIT_TESTING_CHECKLIST_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/dev/PRE_COMMIT_TESTING_CHECKLIST_v1.md) | Before every single commit |
-| ⚔️ **TRIM LORD** (HS-110) | [`dev/LEAN_RAID_DISCIPLINE_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/dev/LEAN_RAID_DISCIPLINE_v1.md) | Entire sprint — no scope creep |
-| 🐕 **GREP HOUND** (HS-109) | [`dev/CROSS_REFERENCE_BEFORE_WRITING_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/dev/CROSS_REFERENCE_BEFORE_WRITING_v1.md) | Before writing any new component or function |
-| 📊 **THE METRICS OATH** (HS-105) | [`dev/CORE_AGENT_METRICS_CONTRACT_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/dev/CORE_AGENT_METRICS_CONTRACT_v1.md) | Admin vitals cards and stat displays |
-| 🌱 **THE BIRTH RITE** (HS-106) | [`dev/NEW_AGENT_BUILD_CHECKLIST_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/dev/NEW_AGENT_BUILD_CHECKLIST_v1.md) | Task 6 — Agents Lab wiring |
-| 🔱 **REALITY ANCHOR** (HS-108) | [`dev/TRUTH_VS_CLAIM_AUDIT_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/dev/TRUTH_VS_CLAIM_AUDIT_v1.md) | After each task — verify you did what you said |
-| 🪞 **THE MIRROR OATH** (HS-088) | [`agents/AGENT_FINAL_SELF_AUDIT_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/agents/AGENT_FINAL_SELF_AUDIT_v1.md) | Before calling any task "done" |
-| 👁️ **THE ALL-SEEING** (HS-070) | [`agents/OBSERVABLE_AGENT_OPERATIONS_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/agents/OBSERVABLE_AGENT_OPERATIONS_v1.md) | Products Watcher visible action |
-| 🪂 **SOFT LANDING** (HS-071) | [`agents/FAIL_GRACEFULLY_FALLBACK_CHAIN_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/agents/FAIL_GRACEFULLY_FALLBACK_CHAIN_v1.md) | Any agent error handling |
-| 🚧 **THE FIVE WARDS** (HS-085) | [`agents/FIVE_MANDATORY_AGENT_GUARDRAILS_v1.md`](https://github.com/welshDog/HYPER-SILLs-By-WelshDog/blob/main/agents/FIVE_MANDATORY_AGENT_GUARDRAILS_v1.md) | All Agents Lab wiring |
+> All 7 tasks done. tsc --noEmit clean. Ready to deploy.
+> **Next action: `git pull` locally, then `vercel deploy --prod`**
+> Confirm `.vercel/project.json` points to `hyperfocus-home-page` (NOT showcase-web) before deploying.
 
 ---
 
-## 🏷️ Product Price Mapping — Ask Lyndz For This
+## ✅ Task Status
 
-**Before starting Task 1**, ask for the following for each product:
-
-```
-PRODUCT PRICE MAPPING
-=====================
-Product Name: [exact name as it appears in Supabase]
-Price (GBP): £X.XX
-Stock: [number]
-Category: [e.g. 3D Print / Mug / Bundle / Digital]
-Active: yes / no
-Short description (optional): ...
-```
-
-**Do NOT set any prices or activate any products until this mapping is provided.**
-
----
-
-## 🎯 Context
-
-You are Claude Code, working on a live Next.js 14 / Supabase / Vercel project called **WelshDog Designs**, deployed at https://welshdog.shop.
-
-It's a **neurodivergent-first shop and blog** built for brains that don't switch off.
-
-### What's live:
-- Home, Shop, Blog, About, White-label, Contact pages
-- Mission Control admin with Products, Orders, Leads, Blog, Agents Lab, Subscribers
-- Dedicated Supabase project with 5 tables and RLS
-
----
-
-## 🚦 Current State (READ THIS FIRST)
-
-| Area | Status |
+| Task | Status |
 |---|---|
-| Home | ✅ Strong brand, ❌ No featured product strip |
-| Shop `/shop` | ✅ Structure sound, ❌ "No products yet" — all drafts, £0.00, stock 0 |
-| Blog `/blog` | ✅ Posts exist, ⚠️ Needs content polish + featured section |
-| About `/about` | ✅ Good, ⚠️ Long paragraphs, minor grammar bumps |
-| White-label `/white-label` | ✅ Good structure, ❌ TBD prices, no tier table |
-| Contact `/contact` | ✅ Works, ⚠️ Better "what happens next" line + footer cleanup |
-| Mission Control `/admin` | ✅ Works, ⚠️ Stray debug text, stats could be richer |
-| Orders/Leads/Subscribers | ✅ Pages exist, ❌ Empty states are bare |
-| Agents Lab `/admin/agents` | ✅ Looks cool, ❌ No agent triggers a visible action |
+| Task 1 — Pricing & Product Activation | ✅ DONE — 2026-06-24 |
+| Task 2 — Homepage Featured Products Strip | ✅ DONE — 2026-06-24 |
+| Task 3 — Shop Page Polish | ✅ DONE — 2026-06-24 |
+| Task 4 — Content Polish Pass | ✅ DONE — 2026-06-24 |
+| Task 5 — Admin UX Improvements | ✅ DONE — 2026-06-24 |
+| Task 6 — Agents Lab Wiring | ✅ DONE — 2026-06-24 |
+| Task 7 — Analytics & Error Monitoring | ✅ DONE — 2026-06-24 |
+| Task 8 — Stripe Webhook + Orders | 📋 POST-SPRINT — next session |
 
 ---
 
-## 🛠️ Your Tasks — Polish Sprint
+## 📦 What Shipped
 
-Work through these **in order**. Explain each change as you go.
+### Task 1 — Products ✅
+- 19 products: priced, stocked, active = true in Supabase
+- DB column is `active` (NOT `is_active` — code correct, brief was wrong)
+- Bundle prices fixed: Desk Setup £31.99, Princess Vanity £32.99
+- Mug of Tee Bundle = mug + t-shirt (Teemill)
 
----
+### Task 2 — Homepage ✅
+- Featured products strip under hero (3–4 cards, active products)
+- "3D prints, mugs, gifts, and bundles made in South Wales." hero line
+- ND-first empty state if no active products
 
-### Task 1 — Pricing & Product Activation
+### Task 3 — Shop ✅
+- Persistent "View →" cue on cards (brand-teal on hover, touch-friendly)
+- Sticky category filters (top-16, clears navbar, mobile + desktop)
+- ND-first empty states per category
+- Default-to-All / never-empty logic confirmed correct
 
-**Ask for the product price mapping first**, then:
+### Task 4 — Content ✅
+- **Blog:** Featured posts strip (3 newest), subscribe copy updated
+- **About:** Long paragraphs broken into scannable chunks
+- **Contact:** "I'll read this personally and usually reply within 1–2 working days." added; fake socials hidden (only github.com/welshDog remains); footer fixed to "Made in South Wales, with care ♥"
+- **White-label:** Tier table live with real prices (below), CTAs: "Book a demo" + "Explore pricing"
 
-1. Read products from Supabase `products` table.
-2. Update `price`, `stock`, and `is_active` based on the mapping provided.
-3. Ensure only `is_active = true` products show on public `/shop`.
-4. Each product card must show: `name`, `price`, `category`, and a clear action button ("View" or "Add to basket").
+#### White-label Tier Prices ✅ (confirmed by Lyndz)
+| Tier | Price | What they get | Timeline | Support |
+|---|---|---|---|---|
+| **Starter** | **£297 one-off** | Shop + blog, self-managed | 1–2 weeks | Email |
+| **Pro** | **£597 one-off** | Full setup + custom branding + 30 days support | 2–3 weeks | Priority email |
+| **Done For You** | **£1,497 one-off** | Everything built, launched, handed over | 3–4 weeks | 30-day handholding |
 
----
+### Task 5 — Admin UX ✅
+- Colour-coded stat cards: Products=teal, Orders=green, Leads=amber, Blog=violet
+- Recent Activity placeholder section
+- Products hint banner: "Set prices, stock and mark products Active to appear on the public shop."
+- Filter tabs: All / Live / Drafts / Out of Stock (with counts)
+- Friendly empty states: Orders, Leads, Subscribers all done
+- Vercel Toolbar note: platform overlay only — disable at Vercel → Project → Settings → Toolbar
 
-### Task 2 — Homepage Featured Products Strip
+### Task 6 — Agents Lab ✅
+- Products Watcher wired to real DB check via `checkProductHealth()` server action
+- Toast: green "✓ All active products have a price & stock" or amber "⚠️ N active products have missing prices."
+- Status badges: green pulse (live) / grey (idle) / red (alert)
+- One-sentence descriptions on all agent cards
+- Health/Network explained with legend + hover tooltips
 
-1. Query `is_active = true` products from Supabase.
-2. Render a **3–4 card "Featured Products" strip** under the hero.
-3. Each card: image (or placeholder), name, price, category tag.
-4. If no active products: *"First drops coming soon — check back shortly."*
-5. Add line under hero: *"3D prints, mugs, gifts, and bundles made in South Wales."*
-
----
-
-### Task 3 — Shop Page Polish
-
-1. Product grid with name, price, category, action.
-2. Category filters default to "All" — never show empty grid unless truly no products.
-3. Empty state: *"No products yet — they'll appear here once activated in Mission Control."*
-4. Sticky filters on mobile + desktop.
-
----
-
-### Task 4 — Content Polish Pass
-
-#### Blog `/blog`
-- 3–5 card "Featured Posts" strip at top.
-- Clean up rough titles/snippets.
-- Subscribe copy: *"Get behind-the-scenes shop updates, new drops, and Hyperfocus experiments."*
-
-#### About `/about`
-- Break long paragraphs into shorter chunks (especially "different operating system" section).
-- Fix: *"Made with in South Wales"* → *"Made in South Wales, with care."*
-
-#### White-label `/white-label`
-- Replace all TBD with real prices or ranges (e.g. "from £X").
-- Add tier comparison table:
-
-| Tier | You get | Timeline | Support |
-|---|---|---|---|
-| Starter | ... | ... | ... |
-| Pro | ... | ... | ... |
-| Done For You | ... | ... | ... |
-
-- CTAs: **"Book a demo"** (primary) + **"Explore pricing"** (secondary).
-
-#### Contact `/contact`
-- Add: *"I'll read this personally and usually reply within 1–2 working days."*
-- Hide social links that don't point to real accounts.
-- Fix footer wording.
+### Task 7 — Analytics ✅
+- `@vercel/analytics@^2.0.1` installed, `<Analytics />` in root layout
+- Error logging on `/api/leads` (DB failure + guarded email send)
+- Error logging on `/api/checkout` (Stripe call wrapped → logs + 502 instead of unlogged throw)
+- `/api/contact` = same as `/api/leads` — covered
 
 ---
 
-### Task 5 — Admin UX Improvements
+## 🚀 Deploy Checklist
 
-#### Mission Control `/admin`
-- Remove stray debug text (e.g. `TracingVercel Toolbar`).
-- Add icon + colour per stat card.
-- Add "Recent Activity" placeholder (shows once data exists).
+Before running `vercel deploy --prod`:
 
-#### Products `/admin/products`
-- Hint banner: *"Set prices, stock and mark products Active to appear on the public shop."*
-- Quick filter tabs: **Drafts / Live / Out of Stock**
-
-#### Orders `/admin/orders`
-- Empty state: *"No orders yet — once a customer checks out, orders appear here."*
-
-#### Leads `/admin/leads`
-- Empty state: *"No demo requests yet — white-label form submissions show here."*
-
-#### Subscribers `/admin/subscribers`
-- Empty state: *"Newsletter signups appear here. Export CSV when ready for email tools."*
+- [ ] `git pull` to sync local with GitHub
+- [ ] Confirm `.vercel/project.json` → `hyperfocus-home-page` (NOT `showcase-web`)
+- [ ] Check `.env.local` has `STRIPE_WEBHOOK_SECRET` (needed for Task 8 later)
+- [ ] Run `tsc --noEmit` — must be clean
+- [ ] Run THE GATEKEEPER (HS-076) checklist
+- [ ] Deploy: `vercel deploy --prod`
+- [ ] Smoke test live: `/shop`, `/blog`, `/about`, `/white-label`, `/contact`, `/admin`
 
 ---
 
-### Task 6 — Agents Lab Wiring `/admin/agents`
+## 📋 Task 8 — Stripe Webhook + Orders (Next Session)
 
-1. Wire **"Products Watcher"** agent to a real action:
-   - Check for `is_active = true` products with `price = 0` or `stock = 0`.
-   - Show a toast in admin: *"⚠️ Active products have missing prices."*
-2. Add one-sentence description under each agent card.
-3. Replace "IDLE" text with coloured status badges (green/grey/red).
-4. Add brief explanation of what "health" and "network" vitals mean.
+> **Do not attempt until after deploy is confirmed live.**
 
----
-
-### Task 7 — Analytics & Error Monitoring (Optional)
-
-1. Add `@vercel/analytics` to `app/layout.tsx`.
-2. Add lightweight error logging to:
-   - `/api/leads`
-   - `/api/contact`
-   - Checkout flow
+1. Create `/api/webhooks/stripe/route.ts`
+2. Listen for `checkout.session.completed`
+3. Verify Stripe webhook signature (`STRIPE_WEBHOOK_SECRET` from env)
+4. Insert into `orders`: `product_id`, `status = 'pending'`, `amount`, `stripe_session_id`
+5. Decrement `stock` on the product by 1
+6. Use service role for the webhook (RLS allows public INSERT with `status = 'pending'`)
+7. Register in Stripe dashboard: `https://welshdog.shop/api/webhooks/stripe`
 
 ---
 
-## ⚠️ Hard Constraints — NEVER BREAK
+## 🧠 HYPER-SKILLs Guardrails
+
+Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
+
+| Skill | File | When |
+|---|---|---|
+| MERCY MESSAGE (HS-069) | broski/ND_FIRST_ERROR_MESSAGES_v1.md | All empty states + errors |
+| THE STYLE CODEX (HS-084) | dev/CODE_STYLE_STANDARDS_v1.md | Every component |
+| THE GATEKEEPER (HS-076) | dev/PRE_COMMIT_TESTING_CHECKLIST_v1.md | Before every commit |
+| TRIM LORD (HS-110) | dev/LEAN_RAID_DISCIPLINE_v1.md | Whole sprint |
+| GREP HOUND (HS-109) | dev/CROSS_REFERENCE_BEFORE_WRITING_v1.md | Before new code |
+| REALITY ANCHOR (HS-108) | dev/TRUTH_VS_CLAIM_AUDIT_v1.md | After each task |
+| THE MIRROR OATH (HS-088) | agents/AGENT_FINAL_SELF_AUDIT_v1.md | Before marking done |
+
+---
+
+## ⚠️ Hard Constraints — Never Break
 
 | Rule | Detail |
 |---|---|
@@ -193,19 +135,7 @@ Work through these **in order**. Explain each change as you go.
 | Design | Polish only — no big layout rewrites |
 | `.env` files | NEVER commit |
 | Supabase | Use existing tables/RLS — do NOT drop or recreate |
-
----
-
-## ✅ Done When...
-
-- [ ] `/shop` shows active products with real prices + categories
-- [ ] Homepage has a featured products strip
-- [ ] White-label has real tier prices + comparison table
-- [ ] All admin empty states have helpful, friendly copy
-- [ ] At least one Agents Lab agent does something visible
-- [ ] Debug artefacts removed from Mission Control
-- [ ] About/Contact/Blog copy is clean and scannable
-- [ ] Vercel Analytics added
+| Column name | `active` — NEVER `is_active` |
 
 ---
 
