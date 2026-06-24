@@ -5,7 +5,7 @@
 
 ## 🎉 SPRINT COMPLETE — SITE LIVE ✅ 2026-06-24
 
-> All 7 tasks done + footer links added. tsc clean. Deployed and confirmed live at welshdog.shop.
+> All tasks done. tsc clean. Deployed and confirmed live at welshdog.shop.
 > **Next session: Task 8 — Stripe Webhook + Orders**
 
 ---
@@ -22,7 +22,8 @@
 | Task 6 — Agents Lab Wiring | ✅ DONE — 2026-06-24 |
 | Task 7 — Analytics & Error Monitoring | ✅ DONE — 2026-06-24 |
 | Footer Links — Showcase + Socials | ✅ DONE — 2026-06-25 |
-| Task 8 — Stripe Webhook + Orders | 📋 POST-SPRINT — next session |
+| Product Image Upload | ⏳ WIRED — needs deploy + round-trip test |
+| Task 8 — Stripe Webhook + Orders | 📋 Next session |
 
 ---
 
@@ -48,8 +49,8 @@
 ### Task 4 — Content ✅
 - **Blog:** Featured posts strip (3 newest), subscribe copy updated
 - **About:** Long paragraphs broken into scannable chunks
-- **Contact:** "I'll read this personally and usually reply within 1–2 working days." added; fake socials hidden (only github.com/welshDog remains); footer fixed to "Made in South Wales, with care ♥"
-- **White-label:** Tier table live with real prices (below), CTAs: "Book a demo" + "Explore pricing"
+- **Contact:** "I'll read this personally and usually reply within 1–2 working days." added; fake socials hidden; footer → "Made in South Wales, with care ♥"
+- **White-label:** Tier table live with real prices, CTAs: "Book a demo" + "Explore pricing"
 
 #### White-label Tier Prices ✅ (confirmed by Lyndz)
 | Tier | Price | What they get | Timeline | Support |
@@ -61,29 +62,48 @@
 ### Task 5 — Admin UX ✅
 - Colour-coded stat cards: Products=teal, Orders=green, Leads=amber, Blog=violet
 - Recent Activity placeholder section
-- Products hint banner: "Set prices, stock and mark products Active to appear on the public shop."
-- Filter tabs: All / Live / Drafts / Out of Stock (with counts)
-- Friendly empty states: Orders, Leads, Subscribers all done
-- Vercel Toolbar: platform overlay only — disable at Vercel → Project → Settings → Toolbar
+- Products hint banner + filter tabs: All / Live / Drafts / Out of Stock
+- Friendly empty states: Orders, Leads, Subscribers
+- Vercel Toolbar: platform overlay — disable at Vercel → Project → Settings → Toolbar
 
 ### Task 6 — Agents Lab ✅
-- Products Watcher wired to real DB check via `checkProductHealth()` server action
-- Toast: green "✓ All active products have a price & stock" or amber "⚠️ N active products have missing prices."
-- Status badges: green pulse (live) / grey (idle) / red (alert)
-- One-sentence descriptions on all agent cards
-- Health/Network explained with legend + hover tooltips
+- Products Watcher: `checkProductHealth()` server action, real DB check
+- Toast: green "✓ All good" or amber "⚠️ N products have missing prices"
+- Status badges: green pulse / grey / red
+- Descriptions + Health/Network legend + tooltips
 
 ### Task 7 — Analytics ✅
-- `@vercel/analytics@^2.0.1` installed, `<Analytics />` in root layout
-- Error logging on `/api/leads` (DB failure + guarded email send)
-- Error logging on `/api/checkout` (Stripe call wrapped → logs + 502 instead of unlogged throw)
+- `@vercel/analytics@^2.0.1` + `<Analytics />` in root layout
+- Error logging on `/api/leads` + `/api/checkout`
 
 ### Footer Links ✅
-- 🐙 GitHub → https://github.com/welshDog (unchanged)
+- 🐙 GitHub → https://github.com/welshDog
 - 🚀 WelshDog Showcase → https://showcase-web-omega.vercel.app/
 - 🪐 WelshDog Socials → https://bafybeibcz6tx64yd3cyq5jh747mwzdr45yvzvrzaam4lvfsda7wxlvjljy.ipfs.inbrowser.link/
-- All open in new tab, aria-labels set, muted grey → teal on hover
-- Images to be added manually by Lyndz
+- All new tab, aria-labels, muted grey → teal on hover
+
+### Product Image Upload ⏳ Wired — Needs Deploy + Test
+
+> **⚠️ Deploy before testing. next.config body limit raise is local.**
+> After deploy: edit any product in Mission Control → add images → save → check shop card.
+
+**What was built:**
+- Supabase Storage bucket `product-images` — public, 5MB cap, images only (already live)
+- Upload via service-role admin client (requireAdmin-gated — secure)
+- Mission Control product form now has Images section:
+  - Thumbnails of existing images with ✕ remove button
+  - "Cover" badge on first image (shows on shop cards)
+  - Multi-file picker: "N new images ready to upload"
+  - Helper: PNG/JPG/WebP · up to 5MB each
+- `saveProduct` merges kept + new URLs into `images[]`
+- `next.config.js` body limit raised to 10MB (default 1MB would silently reject real photos)
+- Shop already renders `images[0]` on product cards — no extra code needed there
+
+**To confirm it works:**
+1. `vercel deploy --prod`
+2. Open `/admin/products` → edit any product
+3. Pick an image file → Save
+4. Check `/shop` — card should show the real photo
 
 ---
 
@@ -96,7 +116,7 @@
 3. Verify Stripe webhook signature (`STRIPE_WEBHOOK_SECRET` from env)
 4. Insert into `orders`: `product_id`, `status = 'pending'`, `amount`, `stripe_session_id`
 5. Decrement `stock` on the product by 1
-6. Use service role for the webhook (RLS allows public INSERT with `status = 'pending'`)
+6. Use service role for the webhook
 7. Register in Stripe dashboard: `https://welshdog.shop/api/webhooks/stripe`
 
 ---
