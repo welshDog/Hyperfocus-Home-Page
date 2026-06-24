@@ -3,11 +3,10 @@
 
 ---
 
-## 🎉 SPRINT COMPLETE — 2026-06-24
+## 🎉 SPRINT COMPLETE — SITE LIVE ✅ 2026-06-24
 
-> All 7 tasks done. tsc --noEmit clean. Ready to deploy.
-> **Next action: `git pull` locally, then `vercel deploy --prod`**
-> Confirm `.vercel/project.json` points to `hyperfocus-home-page` (NOT showcase-web) before deploying.
+> All 7 tasks done + footer links added. tsc clean. Deployed and confirmed live at welshdog.shop.
+> **Next session: Task 8 — Stripe Webhook + Orders**
 
 ---
 
@@ -22,6 +21,7 @@
 | Task 5 — Admin UX Improvements | ✅ DONE — 2026-06-24 |
 | Task 6 — Agents Lab Wiring | ✅ DONE — 2026-06-24 |
 | Task 7 — Analytics & Error Monitoring | ✅ DONE — 2026-06-24 |
+| Footer Links — Showcase + Socials | ✅ DONE — 2026-06-25 |
 | Task 8 — Stripe Webhook + Orders | 📋 POST-SPRINT — next session |
 
 ---
@@ -64,7 +64,7 @@
 - Products hint banner: "Set prices, stock and mark products Active to appear on the public shop."
 - Filter tabs: All / Live / Drafts / Out of Stock (with counts)
 - Friendly empty states: Orders, Leads, Subscribers all done
-- Vercel Toolbar note: platform overlay only — disable at Vercel → Project → Settings → Toolbar
+- Vercel Toolbar: platform overlay only — disable at Vercel → Project → Settings → Toolbar
 
 ### Task 6 — Agents Lab ✅
 - Products Watcher wired to real DB check via `checkProductHealth()` server action
@@ -77,27 +77,19 @@
 - `@vercel/analytics@^2.0.1` installed, `<Analytics />` in root layout
 - Error logging on `/api/leads` (DB failure + guarded email send)
 - Error logging on `/api/checkout` (Stripe call wrapped → logs + 502 instead of unlogged throw)
-- `/api/contact` = same as `/api/leads` — covered
 
----
-
-## 🚀 Deploy Checklist
-
-Before running `vercel deploy --prod`:
-
-- [ ] `git pull` to sync local with GitHub
-- [ ] Confirm `.vercel/project.json` → `hyperfocus-home-page` (NOT `showcase-web`)
-- [ ] Check `.env.local` has `STRIPE_WEBHOOK_SECRET` (needed for Task 8 later)
-- [ ] Run `tsc --noEmit` — must be clean
-- [ ] Run THE GATEKEEPER (HS-076) checklist
-- [ ] Deploy: `vercel deploy --prod`
-- [ ] Smoke test live: `/shop`, `/blog`, `/about`, `/white-label`, `/contact`, `/admin`
+### Footer Links ✅
+- 🐙 GitHub → https://github.com/welshDog (unchanged)
+- 🚀 WelshDog Showcase → https://showcase-web-omega.vercel.app/
+- 🪐 WelshDog Socials → https://bafybeibcz6tx64yd3cyq5jh747mwzdr45yvzvrzaam4lvfsda7wxlvjljy.ipfs.inbrowser.link/
+- All open in new tab, aria-labels set, muted grey → teal on hover
+- Images to be added manually by Lyndz
 
 ---
 
 ## 📋 Task 8 — Stripe Webhook + Orders (Next Session)
 
-> **Do not attempt until after deploy is confirmed live.**
+> **Start here next session. Site is live and confirmed working.**
 
 1. Create `/api/webhooks/stripe/route.ts`
 2. Listen for `checkout.session.completed`
