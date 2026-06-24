@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Github, Heart } from 'lucide-react'
+import { Github, Heart, Rocket, Orbit } from 'lucide-react'
 
 const nav = [
   { href: '/shop', label: 'Shop' },
@@ -9,10 +9,20 @@ const nav = [
   { href: '/contact', label: 'Contact' },
 ]
 
-// Only real, verified accounts appear here. Add Instagram / X back when
-// they point to actual WelshDog profiles, not bare domains.
+// External WelshDog links. All open in a new tab and only point to real,
+// verified destinations (add Instagram / X back when they're real profiles).
 const socials = [
   { href: 'https://github.com/welshDog', label: 'GitHub', Icon: Github },
+  {
+    href: 'https://showcase-web-omega.vercel.app/',
+    label: 'WelshDog Showcase',
+    Icon: Rocket,
+  },
+  {
+    href: 'https://bafybeibcz6tx64yd3cyq5jh747mwzdr45yvzvrzaam4lvfsda7wxlvjljy.ipfs.inbrowser.link/',
+    label: 'WelshDog Socials',
+    Icon: Orbit,
+  },
 ]
 
 export function Footer() {
