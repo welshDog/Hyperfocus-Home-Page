@@ -1,7 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
-import { Loader2 } from 'lucide-react'
+import { Loader2, X, ImagePlus } from 'lucide-react'
 import { saveProduct, type FormState } from '@/app/(admin)/admin/(dashboard)/actions'
 import { Button } from '@/components/ui/Button'
 import type { Product } from '@/types'
@@ -22,6 +23,8 @@ function SubmitButton() {
 
 export function ProductForm({ product }: { product?: Product }) {
   const [state, action] = useFormState<FormState, FormData>(saveProduct, undefined)
+  const [keptImages, setKeptImages] = useState<string[]>(product?.images ?? [])
+  const [newCount, setNewCount] = useState(0)
 
   return (
     <form action={action} className="flex max-w-2xl flex-col gap-4">
@@ -62,6 +65,55 @@ export function ProductForm({ product }: { product?: Product }) {
         Description
         <textarea name="description" rows={5} defaultValue={product?.description ?? ''} className={`${inputClass} h-auto py-2`} />
       </label>
+
+      {/* Images */}
+      <div className={labelClass}>
+        Images
+        {keptImages.length > 0 && (
+          <div className="mt-1 flex flex-wrap gap-3">
+            {keptImages.map((url, i) => (
+              <div
+                key={url}
+                className="relative h-20 w-20 overflow-hidden rounded-lg border border-white/10"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="h-full w-full object-cover" />
+                {i === 0 && (
+                  <span className="absolute inset-x-0 bottom-0 bg-black/70 py-0.5 text-center text-[10px] font-medium text-brand-200">
+                    Cover
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setKeptImages((p) => p.filter((u) => u !== url))}
+                  aria-label="Remove image"
+                  className="absolute right-1 top-1 rounded-full bg-black/70 p-0.5 text-neutral-200 hover:text-white"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+                <input type="hidden" name="existing_images" value={url} />
+              </div>
+            ))}
+          </div>
+        )}
+        <label className="mt-1 flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-white/15 bg-card px-3 py-3 text-sm font-normal text-neutral-400 transition-colors hover:border-brand-300 hover:text-neutral-200">
+          <ImagePlus className="h-4 w-4 shrink-0" />
+          {newCount > 0
+            ? `${newCount} new image${newCount === 1 ? '' : 's'} ready to upload`
+            : 'Choose images to upload'}
+          <input
+            type="file"
+            name="images"
+            accept="image/*"
+            multiple
+            onChange={(e) => setNewCount(e.target.files?.length ?? 0)}
+            className="sr-only"
+          />
+        </label>
+        <span className="text-xs font-normal text-neutral-500">
+          PNG, JPG or WebP · up to 5MB each. The first image is the shop cover.
+        </span>
+      </div>
 
       <label className="flex items-center gap-3 text-sm font-medium text-neutral-300">
         <input

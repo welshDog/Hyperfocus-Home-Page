@@ -7,6 +7,13 @@ const nextConfig = {
       { protocol: 'https', hostname: 'teemill.com' },
     ],
   },
+  experimental: {
+    // Product image uploads run through a Server Action; the default 1MB
+    // body cap would reject real photos, so allow up to a few MB.
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
 }
 
 module.exports = nextConfig

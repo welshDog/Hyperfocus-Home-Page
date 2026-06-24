@@ -37,7 +37,44 @@ export async function saveProduct(
   if (Number.isNaN(price) || price < 0) return { error: 'Price must be 0 or more.' }
   if (Number.isNaN(stock) || stock < 0) return { error: 'Stock must be 0 or more.' }
 
-  const row = { name, slug, description, category, price, stock, active }
+  // ── Images: keep the ones not removed, upload any newly chosen files ──
+  const kept = formData
+    .getAll('existing_images')
+    .filter((v): v is string => typeof v === 'string' && v.length > 0)
+
+  const files = formData
+    .getAll('images')
+    .filter((f): f is File => f instanceof File && f.size > 0)
+
+  const uploaded: string[] = []
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) {
+      return { error: 'Images must be image files (PNG, JPG, or WebP).' }
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      return { error: `"${file.name}" is over 5MB — please use a smaller image.` }
+    }
+    const ext =
+      file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg'
+    const path = `${slug}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    const { error: upErr } = await admin.storage
+      .from('product-images')
+      .upload(path, await file.arrayBuffer(), {
+        contentType: file.type,
+        upsert: false,
+      })
+    if (upErr) {
+      console.error('[saveProduct] image upload failed:', upErr.message)
+      return { error: 'Image upload failed. Please try again.' }
+    }
+    uploaded.push(
+      admin.storage.from('product-images').getPublicUrl(path).data.publicUrl,
+    )
+  }
+
+  const images = [...kept, ...uploaded]
+
+  const row = { name, slug, description, category, price, stock, active, images }
 
   const { error } = id
     ? await admin.from('products').update(row).eq('id', id)
