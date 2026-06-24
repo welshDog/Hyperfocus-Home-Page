@@ -36,7 +36,9 @@ export default async function ShopPage({
         </p>
       </header>
 
-      <div className="mb-8">
+      {/* Sticky filters — stay reachable while scrolling on mobile + desktop.
+          top-16 clears the sticky navbar (h-16); tokens match it. */}
+      <div className="sticky top-16 z-30 -mx-4 mb-8 border-b border-black/5 bg-paper/80 px-4 py-3 backdrop-blur-md dark:border-white/5 dark:bg-ink/80 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <CategoryTabs active={active} />
       </div>
 
@@ -58,7 +60,9 @@ export default async function ShopPage({
                 : `Nothing in ${active} yet`}
             </p>
             <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-              The catalogue is being loaded. Check back shortly.
+              {active === 'All'
+                ? "No products yet — they'll appear here once activated in Mission Control."
+                : `Nothing in ${active} right now — try another category or view all.`}
             </p>
           </div>
           {active !== 'All' && (

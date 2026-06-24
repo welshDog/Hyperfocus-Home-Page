@@ -43,7 +43,8 @@ export default async function AdminSubscribers() {
             {subs.length === 0 && (
               <tr>
                 <td colSpan={2} className="px-5 py-10 text-center text-neutral-500">
-                  No subscribers yet.
+                  Newsletter signups appear here. Export CSV when ready for
+                  email tools.
                 </td>
               </tr>
             )}

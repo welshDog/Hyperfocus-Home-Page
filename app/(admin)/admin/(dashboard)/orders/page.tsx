@@ -77,7 +77,9 @@ export default async function AdminOrders({
             {orders.length === 0 && (
               <tr>
                 <td colSpan={4} className="px-5 py-10 text-center text-neutral-500">
-                  No orders {active !== 'all' && `with status “${active}”`} yet.
+                  {active === 'all'
+                    ? 'No orders yet — once a customer checks out, orders appear here.'
+                    : `No orders with status “${active}” yet.`}
                 </td>
               </tr>
             )}

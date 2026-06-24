@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card'
 import { PostCard } from '@/components/blog/PostCard'
 import { BlogCategoryTabs } from '@/components/blog/BlogCategoryTabs'
 import { SubscribeForm } from '@/components/blog/SubscribeForm'
-import { getPostsByCategory, BLOG_CATEGORIES } from '@/lib/blog'
+import { getAllPosts, getPostsByCategory, BLOG_CATEGORIES } from '@/lib/blog'
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -22,6 +22,9 @@ export default function BlogIndex({
     : 'All'
 
   const posts = getPostsByCategory(active)
+  // Featured strip: the 3 newest posts, shown only on the unfiltered view
+  // so it complements (rather than duplicates) a filtered category grid.
+  const featured = active === 'All' ? getAllPosts().slice(0, 3) : []
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -32,6 +35,17 @@ export default function BlogIndex({
           creative life — straight from a brain that doesn&apos;t switch off.
         </p>
       </header>
+
+      {featured.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-xl font-bold sm:text-2xl">Featured posts</h2>
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((post) => (
+              <PostCard key={`featured-${post.slug}`} post={post} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="mb-8">
         <BlogCategoryTabs active={active} />
@@ -59,8 +73,8 @@ export default function BlogIndex({
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-2xl font-bold">Never miss a post</h2>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-            New writing on neurodiversity, tech, and building in public — to
-            your inbox. No spam, ever.
+            Get behind-the-scenes shop updates, new drops, and Hyperfocus
+            experiments — straight to your inbox. No spam, ever.
           </p>
           <div className="mt-6 text-left">
             <SubscribeForm />

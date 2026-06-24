@@ -51,25 +51,33 @@ export async function POST(req: Request) {
     /^https?:\/\//.test(u),
   )
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    line_items: [
-      {
-        quantity: 1,
-        price_data: {
-          currency: 'gbp',
-          unit_amount: Math.round(Number(product.price) * 100),
-          product_data: {
-            name: product.name,
-            ...(images.length ? { images: [images[0]] } : {}),
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'gbp',
+            unit_amount: Math.round(Number(product.price) * 100),
+            product_data: {
+              name: product.name,
+              ...(images.length ? { images: [images[0]] } : {}),
+            },
           },
         },
-      },
-    ],
-    success_url: `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${origin}/shop/${product.slug}`,
-    metadata: { product_id: product.id },
-  })
+      ],
+      success_url: `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/shop/${product.slug}`,
+      metadata: { product_id: product.id },
+    })
 
-  return NextResponse.json({ url: session.url })
+    return NextResponse.json({ url: session.url })
+  } catch (err) {
+    console.error('[api/checkout] Stripe session failed:', err)
+    return NextResponse.json(
+      { error: 'Could not start checkout. Please try again.' },
+      { status: 502 },
+    )
+  }
 }

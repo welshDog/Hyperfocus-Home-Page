@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ImageIcon } from 'lucide-react'
+import { ImageIcon, ArrowRight } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { formatPrice } from '@/lib/utils'
@@ -36,9 +36,15 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="font-heading text-base font-semibold leading-snug">
             {product.name}
           </h3>
-          <p className="mt-auto pt-2 text-lg font-bold text-brand dark:text-brand-200">
-            {formatPrice(product.price)}
-          </p>
+          <div className="mt-auto flex items-center justify-between pt-2">
+            <p className="text-lg font-bold text-brand dark:text-brand-200">
+              {formatPrice(product.price)}
+            </p>
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-neutral-500 transition-colors group-hover:text-brand dark:text-neutral-400 dark:group-hover:text-brand-200">
+              View
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </div>
         </div>
       </Card>
     </Link>

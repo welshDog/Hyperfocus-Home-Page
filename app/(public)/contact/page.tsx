@@ -23,6 +23,9 @@ export default function ContactPage() {
         Product questions, a custom commission, a white-label shop, or just a
         hello — drop me a line and I&apos;ll come back to you.
       </p>
+      <p className="mt-4 max-w-xl text-base font-medium text-brand dark:text-brand-200">
+        I&apos;ll read this personally and usually reply within 1–2 working days.
+      </p>
 
       <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.4fr]">
         <div className="space-y-4 text-sm text-neutral-600 dark:text-neutral-400">

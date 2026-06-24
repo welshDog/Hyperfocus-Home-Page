@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Github, Instagram, Twitter, Heart } from 'lucide-react'
+import { Github, Heart } from 'lucide-react'
 
 const nav = [
   { href: '/shop', label: 'Shop' },
@@ -9,10 +9,10 @@ const nav = [
   { href: '/contact', label: 'Contact' },
 ]
 
+// Only real, verified accounts appear here. Add Instagram / X back when
+// they point to actual WelshDog profiles, not bare domains.
 const socials = [
   { href: 'https://github.com/welshDog', label: 'GitHub', Icon: Github },
-  { href: 'https://instagram.com', label: 'Instagram', Icon: Instagram },
-  { href: 'https://twitter.com', label: 'Twitter / X', Icon: Twitter },
 ]
 
 export function Footer() {
@@ -70,9 +70,8 @@ export function Footer() {
             href="/admin"
             className="group inline-flex items-center gap-1 text-xs text-neutral-400 hover:text-brand transition-colors"
           >
-            Made with
+            Made in South Wales, with care
             <Heart className="h-3 w-3 group-hover:fill-brand group-hover:text-brand transition-colors" />
-            in South Wales
           </Link>
         </div>
       </div>

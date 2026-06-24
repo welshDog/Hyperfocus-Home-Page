@@ -35,11 +35,16 @@ export default function AboutPage() {
 
       <div className="mt-8 space-y-5 text-lg text-neutral-700 dark:text-neutral-300">
         <p>
-          I&apos;m <strong>Lyndon Williams</strong> — WelshDog. I&apos;m dyslexic,
-          I have ADHD, and I&apos;m autistic. For most of my life that was framed
-          as a list of things I couldn&apos;t do. Turns out it&apos;s the opposite:
-          it&apos;s a different operating system, and once you build for it
-          instead of against it, it&apos;s a superpower.
+          I&apos;m <strong>Lyndon Williams</strong> — WelshDog. I&apos;m
+          dyslexic, I have ADHD, and I&apos;m autistic.
+        </p>
+        <p>
+          For most of my life that was framed as a list of things I
+          couldn&apos;t do. Turns out it&apos;s the opposite.
+        </p>
+        <p>
+          It&apos;s a different operating system. Once you build for it instead
+          of against it, it&apos;s a superpower.
         </p>
         <p>
           WelshDog Designs is where that energy goes. Original 3D-printed gear and

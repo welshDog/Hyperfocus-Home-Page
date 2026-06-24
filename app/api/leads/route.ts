@@ -45,6 +45,7 @@ export async function POST(req: Request) {
   })
 
   if (error) {
+    console.error('[api/leads] insert failed:', error.message)
     return NextResponse.json(
       { error: 'Could not submit. Please try again.' },
       { status: 500 },
@@ -52,7 +53,13 @@ export async function POST(req: Request) {
   }
 
   // Fire-and-forget confirmation; never block the 200 on email delivery.
-  const emailResult = await sendLeadConfirmation({ to: email, name, tier })
+  let emailed = false
+  try {
+    const emailResult = await sendLeadConfirmation({ to: email, name, tier })
+    emailed = emailResult.sent
+  } catch (err) {
+    console.error('[api/leads] confirmation email failed:', err)
+  }
 
-  return NextResponse.json({ ok: true, emailed: emailResult.sent })
+  return NextResponse.json({ ok: true, emailed })
 }

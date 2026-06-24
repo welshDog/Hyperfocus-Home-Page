@@ -36,6 +36,10 @@ export default async function HomePage() {
             plus the shop engine that powers it all, ready for you to own.
           </p>
 
+          <p className="mt-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+            3D prints, mugs, gifts, and bundles made in South Wales.
+          </p>
+
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/shop" size="lg">
               Shop Now
@@ -79,10 +83,11 @@ export default async function HomePage() {
             </span>
             <div>
               <p className="font-heading text-lg font-semibold">
-                Fresh stock incoming
+                First drops coming soon
               </p>
               <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                The catalogue is being loaded. Check back shortly.
+                New originals from the workshop are on the way — check back
+                shortly.
               </p>
             </div>
             <ButtonLink href="/shop" variant="outline" size="sm">

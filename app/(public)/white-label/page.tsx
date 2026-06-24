@@ -12,10 +12,17 @@ export const metadata: Metadata = {
     'Own the engine. Get the same neurodivergent-first shop stack — branded, wired for payments, ready to sell.',
 }
 
+// `timeline` / `support` are null until Lyndz confirms them — the comparison
+// table renders an honest "TBD" rather than inventing service terms.
 const tiers = [
   {
     name: 'Starter',
     tagline: 'Get going fast',
+    price: '£297',
+    priceNote: 'one-off',
+    summary: 'Template clone, basic branding, Stripe-ready checkout, plus a setup guide and handover.',
+    timeline: '1–2 weeks',
+    support: 'Email',
     features: [
       'Template clone of this shop',
       'Basic branding (logo + colours)',
@@ -27,6 +34,11 @@ const tiers = [
   {
     name: 'Pro',
     tagline: 'Branded & wired',
+    price: '£597',
+    priceNote: 'one-off',
+    summary: 'Everything in Starter, fully branded, payments configured, products imported, blog + email capture.',
+    timeline: '2–3 weeks',
+    support: 'Priority email',
     features: [
       'Everything in Starter',
       'Full branded setup',
@@ -39,6 +51,11 @@ const tiers = [
   {
     name: 'Done For You',
     tagline: 'Full launch',
+    price: '£1,497',
+    priceNote: 'one-off',
+    summary: 'Everything in Pro, launched end to end, with content + SEO setup, priority changes, and 1:1 support.',
+    timeline: '3–4 weeks',
+    support: '30-day handholding',
     features: [
       'Everything in Pro',
       'Full launch, end to end',
@@ -67,17 +84,16 @@ export default function WhiteLabelPage() {
         </p>
         <div className="mt-7 flex flex-col gap-3 sm:flex-row">
           <ButtonLink href="#book" size="lg">
-            Book a Demo
+            Book a demo
           </ButtonLink>
-          {/* TODO: replace with real Stripe payment link */}
-          <ButtonLink href="#book" size="lg" variant="outline">
-            Buy Your Shop
+          <ButtonLink href="#tiers" size="lg" variant="outline">
+            Explore pricing
           </ButtonLink>
         </div>
       </section>
 
       {/* Tiers */}
-      <section className="mt-16">
+      <section id="tiers" className="mt-16 scroll-mt-24">
         <h2 className="text-2xl font-bold sm:text-3xl">Pick your tier</h2>
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
           {tiers.map((tier) => (
@@ -94,11 +110,12 @@ export default function WhiteLabelPage() {
               </div>
               <p className="mt-1 text-sm text-neutral-500">{tier.tagline}</p>
 
-              {/* Price intentionally TBD — Lyndon to fill in */}
               <p className="mt-5 text-3xl font-bold text-brand dark:text-brand-200">
-                TBD
+                {tier.price}
               </p>
-              <p className="text-xs text-neutral-500">Pricing coming soon</p>
+              <p className="text-xs text-neutral-500">
+                {tier.priceNote} · {tier.timeline}
+              </p>
 
               <ul className="mt-6 flex-1 space-y-3">
                 {tier.features.map((f) => (
@@ -120,6 +137,54 @@ export default function WhiteLabelPage() {
               </ButtonLink>
             </Card>
           ))}
+        </div>
+      </section>
+
+      {/* Tier comparison */}
+      <section className="mt-16">
+        <h2 className="text-2xl font-bold sm:text-3xl">Compare tiers</h2>
+        <p className="mt-2 text-sm text-neutral-500">
+          One-off pricing, no subscriptions. Not sure which fits? Book a demo
+          and I&apos;ll point you to the right one.
+        </p>
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-black/10 dark:border-white/10">
+                <th className="py-3 pr-4 font-heading font-semibold">Tier</th>
+                <th className="py-3 pr-4 font-heading font-semibold">Price</th>
+                <th className="py-3 pr-4 font-heading font-semibold">You get</th>
+                <th className="py-3 pr-4 font-heading font-semibold">Timeline</th>
+                <th className="py-3 font-heading font-semibold">Support</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tiers.map((tier) => (
+                <tr
+                  key={tier.name}
+                  className="border-b border-black/5 align-top dark:border-white/5"
+                >
+                  <td className="py-4 pr-4 font-semibold">
+                    {tier.name}
+                    {tier.featured && (
+                      <Badge className="ml-2 align-middle">Popular</Badge>
+                    )}
+                  </td>
+                  <td className="py-4 pr-4 font-semibold text-brand dark:text-brand-200">
+                    {tier.price}
+                    <span className="block text-xs font-normal text-neutral-500">
+                      {tier.priceNote}
+                    </span>
+                  </td>
+                  <td className="py-4 pr-4 text-neutral-600 dark:text-neutral-400">
+                    {tier.summary}
+                  </td>
+                  <td className="py-4 pr-4 text-neutral-500">{tier.timeline}</td>
+                  <td className="py-4 text-neutral-500">{tier.support}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 

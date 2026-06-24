@@ -42,7 +42,7 @@ export default async function AdminLeads() {
             {leads.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-5 py-10 text-center text-neutral-500">
-                  No leads yet.
+                  No demo requests yet — white-label form submissions show here.
                 </td>
               </tr>
             )}

@@ -116,16 +116,17 @@ export default async function AdminDashboard() {
 
       {/* Stats row */}
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Products" value={stats.products} Icon={Package} href="/admin/products" />
-        <StatCard label="Orders" value={stats.orders} Icon={ShoppingCart} href="/admin/orders" />
+        <StatCard label="Products" value={stats.products} Icon={Package} href="/admin/products" accent="teal" />
+        <StatCard label="Orders" value={stats.orders} Icon={ShoppingCart} href="/admin/orders" accent="green" />
         <StatCard
           label="New leads"
           value={stats.leads7}
           Icon={Inbox}
           href="/admin/leads"
           hint="Last 7 days"
+          accent="amber"
         />
-        <StatCard label="Blog posts" value={stats.posts} Icon={FileText} href="/admin/blog" />
+        <StatCard label="Blog posts" value={stats.posts} Icon={FileText} href="/admin/blog" accent="violet" />
       </section>
 
       {/* Recent leads */}
@@ -169,6 +170,24 @@ export default async function AdminDashboard() {
             No leads yet. They&apos;ll appear here when someone books a demo.
           </p>
         )}
+      </section>
+
+      {/* Recent activity (placeholder until an activity feed exists) */}
+      <section className="rounded-2xl border border-white/5 bg-card">
+        <div className="px-5 py-4">
+          <h2 className="font-heading text-base font-semibold">
+            Recent activity
+          </h2>
+        </div>
+        <div className="flex flex-col items-center gap-3 border-t border-white/5 px-5 py-10 text-center">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-neutral-400">
+            <Activity className="h-5 w-5" />
+          </span>
+          <p className="text-sm text-neutral-400">
+            No activity yet. Orders, new leads, and signups will show up here as
+            they happen.
+          </p>
+        </div>
       </section>
 
       {/* Quick links */}
