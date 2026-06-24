@@ -26,22 +26,18 @@
 
 ---
 
-## 🏷️ Product Price Mapping — Ask Lyndz For This
+## ✅ Task Status
 
-**Before starting Task 1**, ask for the following for each product:
-
-```
-PRODUCT PRICE MAPPING
-=====================
-Product Name: [exact name as it appears in Supabase]
-Price (GBP): £X.XX
-Stock: [number]
-Category: [e.g. 3D Print / Mug / Bundle / Digital]
-Active: yes / no
-Short description (optional): ...
-```
-
-**Do NOT set any prices or activate any products until this mapping is provided.**
+| Task | Status |
+|---|---|
+| Task 1 — Pricing & Product Activation | ✅ DONE — 2026-06-24 |
+| Task 2 — Homepage Featured Products Strip | ⏳ UP NEXT |
+| Task 3 — Shop Page Polish | ⏳ Queued |
+| Task 4 — Content Polish Pass | ⏳ Queued |
+| Task 5 — Admin UX Improvements | ⏳ Queued |
+| Task 6 — Agents Lab Wiring | ⏳ Queued |
+| Task 7 — Analytics & Error Monitoring | ⏳ Queued |
+| Task 8 — Stripe Webhook + Orders | 📋 Post-sprint |
 
 ---
 
@@ -55,6 +51,7 @@ It's a **neurodivergent-first shop and blog** built for brains that don't switch
 - Home, Shop, Blog, About, White-label, Contact pages
 - Mission Control admin with Products, Orders, Leads, Blog, Agents Lab, Subscribers
 - Dedicated Supabase project with 5 tables and RLS
+- **All 19 products are now live** — priced, stocked, active = true
 
 ---
 
@@ -63,7 +60,7 @@ It's a **neurodivergent-first shop and blog** built for brains that don't switch
 | Area | Status |
 |---|---|
 | Home | ✅ Strong brand, ❌ No featured product strip |
-| Shop `/shop` | ✅ Structure sound, ❌ "No products yet" — all drafts, £0.00, stock 0 |
+| Shop `/shop` | ✅ 19 active products with real prices |
 | Blog `/blog` | ✅ Posts exist, ⚠️ Needs content polish + featured section |
 | About `/about` | ✅ Good, ⚠️ Long paragraphs, minor grammar bumps |
 | White-label `/white-label` | ✅ Good structure, ❌ TBD prices, no tier table |
@@ -74,26 +71,25 @@ It's a **neurodivergent-first shop and blog** built for brains that don't switch
 
 ---
 
-## 🛠️ Your Tasks — Polish Sprint
+## ⚠️ DB Column Name — CRITICAL
 
-Work through these **in order**. Explain each change as you go.
-
----
-
-### Task 1 — Pricing & Product Activation
-
-**Ask for the product price mapping first**, then:
-
-1. Read products from Supabase `products` table.
-2. Update `price`, `stock`, and `is_active` based on the mapping provided.
-3. Ensure only `is_active = true` products show on public `/shop`.
-4. Each product card must show: `name`, `price`, `category`, and a clear action button ("View" or "Add to basket").
+The column is **`active`** (boolean) — NOT `is_active`.
+Everywhere this brief says `is_active`, read it as `active`.
+The app code already uses `active` correctly. Don't change the code.
 
 ---
 
-### Task 2 — Homepage Featured Products Strip
+## ~~Task 1 — Pricing & Product Activation~~ ✅ DONE
 
-1. Query `is_active = true` products from Supabase.
+All 19 products updated directly in Supabase on 2026-06-24.
+Prices, stock, descriptions, and active = true all set.
+Do not re-run this task.
+
+---
+
+## Task 2 — Homepage Featured Products Strip
+
+1. Query `active = true` products from Supabase.
 2. Render a **3–4 card "Featured Products" strip** under the hero.
 3. Each card: image (or placeholder), name, price, category tag.
 4. If no active products: *"First drops coming soon — check back shortly."*
@@ -101,7 +97,7 @@ Work through these **in order**. Explain each change as you go.
 
 ---
 
-### Task 3 — Shop Page Polish
+## Task 3 — Shop Page Polish
 
 1. Product grid with name, price, category, action.
 2. Category filters default to "All" — never show empty grid unless truly no products.
@@ -110,18 +106,18 @@ Work through these **in order**. Explain each change as you go.
 
 ---
 
-### Task 4 — Content Polish Pass
+## Task 4 — Content Polish Pass
 
-#### Blog `/blog`
+### Blog `/blog`
 - 3–5 card "Featured Posts" strip at top.
 - Clean up rough titles/snippets.
 - Subscribe copy: *"Get behind-the-scenes shop updates, new drops, and Hyperfocus experiments."*
 
-#### About `/about`
+### About `/about`
 - Break long paragraphs into shorter chunks (especially "different operating system" section).
 - Fix: *"Made with in South Wales"* → *"Made in South Wales, with care."*
 
-#### White-label `/white-label`
+### White-label `/white-label`
 - Replace all TBD with real prices or ranges (e.g. "from £X").
 - Add tier comparison table:
 
@@ -133,39 +129,39 @@ Work through these **in order**. Explain each change as you go.
 
 - CTAs: **"Book a demo"** (primary) + **"Explore pricing"** (secondary).
 
-#### Contact `/contact`
+### Contact `/contact`
 - Add: *"I'll read this personally and usually reply within 1–2 working days."*
 - Hide social links that don't point to real accounts.
 - Fix footer wording.
 
 ---
 
-### Task 5 — Admin UX Improvements
+## Task 5 — Admin UX Improvements
 
-#### Mission Control `/admin`
+### Mission Control `/admin`
 - Remove stray debug text (e.g. `TracingVercel Toolbar`).
 - Add icon + colour per stat card.
 - Add "Recent Activity" placeholder (shows once data exists).
 
-#### Products `/admin/products`
+### Products `/admin/products`
 - Hint banner: *"Set prices, stock and mark products Active to appear on the public shop."*
 - Quick filter tabs: **Drafts / Live / Out of Stock**
 
-#### Orders `/admin/orders`
+### Orders `/admin/orders`
 - Empty state: *"No orders yet — once a customer checks out, orders appear here."*
 
-#### Leads `/admin/leads`
+### Leads `/admin/leads`
 - Empty state: *"No demo requests yet — white-label form submissions show here."*
 
-#### Subscribers `/admin/subscribers`
+### Subscribers `/admin/subscribers`
 - Empty state: *"Newsletter signups appear here. Export CSV when ready for email tools."*
 
 ---
 
-### Task 6 — Agents Lab Wiring `/admin/agents`
+## Task 6 — Agents Lab Wiring `/admin/agents`
 
 1. Wire **"Products Watcher"** agent to a real action:
-   - Check for `is_active = true` products with `price = 0` or `stock = 0`.
+   - Check for `active = true` products with `price = 0` or `stock = 0`.
    - Show a toast in admin: *"⚠️ Active products have missing prices."*
 2. Add one-sentence description under each agent card.
 3. Replace "IDLE" text with coloured status badges (green/grey/red).
@@ -173,13 +169,35 @@ Work through these **in order**. Explain each change as you go.
 
 ---
 
-### Task 7 — Analytics & Error Monitoring (Optional)
+## Task 7 — Analytics & Error Monitoring (Optional)
 
 1. Add `@vercel/analytics` to `app/layout.tsx`.
 2. Add lightweight error logging to:
    - `/api/leads`
    - `/api/contact`
    - Checkout flow
+
+---
+
+## Task 8 — Stripe Webhook + Orders Recording 📋 POST-SPRINT
+
+> **Do not attempt this during the polish sprint. Queue for next session.**
+
+Currently `app/api/checkout/route.ts` creates a Stripe session but never writes to the `orders` table.
+Orders only get recorded if a webhook catches `checkout.session.completed`.
+
+**What needs building:**
+1. Create `/api/webhooks/stripe/route.ts`
+2. Listen for `checkout.session.completed` event
+3. Verify Stripe webhook signature (use `STRIPE_WEBHOOK_SECRET` from env)
+4. Insert into `orders` with:
+   - `product_id` from `session.metadata.product_id`
+   - `status = 'pending'`
+   - `amount` from `session.amount_total / 100`
+   - `stripe_session_id` from `session.id`
+5. Decrement `stock` on the product by 1
+6. RLS already allows public INSERT with `status = 'pending'` — use service role for the webhook
+7. Register webhook URL in Stripe dashboard: `https://welshdog.shop/api/webhooks/stripe`
 
 ---
 
@@ -193,12 +211,13 @@ Work through these **in order**. Explain each change as you go.
 | Design | Polish only — no big layout rewrites |
 | `.env` files | NEVER commit |
 | Supabase | Use existing tables/RLS — do NOT drop or recreate |
+| Column name | `active` — NEVER `is_active` |
 
 ---
 
 ## ✅ Done When...
 
-- [ ] `/shop` shows active products with real prices + categories
+- [x] `/shop` shows active products with real prices + categories ✅
 - [ ] Homepage has a featured products strip
 - [ ] White-label has real tier prices + comparison table
 - [ ] All admin empty states have helpful, friendly copy

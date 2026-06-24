@@ -25,10 +25,47 @@ Blog, Agents Lab, Subscribers.
 
 ---
 
+## ✅ SESSION HANDOFF — 2026-06-24
+
+> **Read this before POLISH_SPRINT.md. This is ground truth.**
+
+### Task 1 — COMPLETE ✅
+- All 19 products priced, stocked, and active = true in Supabase
+- DB column is `active` (NOT `is_active` — the sprint doc is wrong, code is correct)
+- Categories in DB: `3D Prints`, `Mugs`, `Gifts`, `Bundles` (plural, mind the spelling)
+- Mug names have surrounding quotes in DB e.g. `"Hyperfocus Mode On" Mug`
+- Checkout queries `.eq('active', true)` — correct, no code change needed
+
+### Bundle Pricing Fixed ✅
+- Desk Setup Bundle: £31.99 (was £44.99 — was more expensive than parts separately)
+- Princess Vanity Bundle: £32.99 (was £39.99 — same issue)
+- Mug of Tee Bundle: mug + **t-shirt** (Teemill), NOT tea
+
+### Supabase Security Hardened ✅
+- `orders` RLS: public INSERT (status = 'pending' only), no SELECT for anon
+- `leads` RLS: public INSERT with email validation (not null, length > 3)
+- `subscribers` RLS: public INSERT with email validation (not null, length > 3)
+- `rls_auto_enable()` SECURITY DEFINER: EXECUTE revoked from anon + authenticated
+- FK index added on `orders.product_id`
+- Security advisors: 6 warnings → 1 remaining (leaked password protection — toggle in Auth dashboard)
+
+### Checkout / Orders Gap ⚠️
+- `app/api/checkout/route.ts` creates a Stripe session but does NOT insert into `orders`
+- There is no Stripe webhook yet — orders table will stay empty after real payments
+- Task 8 (below) covers this — do NOT attempt to fix in this sprint
+
+### Sprint Status
+- Task 1 ✅ DONE
+- Tasks 2–7 ⏳ NOT STARTED — ready to run
+- Task 8 📋 QUEUED — post-sprint
+
+---
+
 ## 🚦 Current Mission
 
 READ POLISH_SPRINT.md NEXT. That is the active task brief.
-Do not write a single line of code before reading it fully.
+Task 1 is done — start from **Task 2 (Homepage Featured Products Strip)**.
+Do not re-run Task 1. Do not touch products table pricing or activation.
 
 ---
 
@@ -56,7 +93,7 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 ## 🔁 Agent Loops
 
 ### Loop 1 — Product Health Check (runs on demand)
-- Check all products in Supabase for: price = 0, stock = 0, is_active = true
+- Check all products in Supabase for: price = 0, stock = 0, active = true
 - Flag any active product with missing price or zero stock
 - Log result to Agents Lab console
 - Never auto-fix — report only, await human decision
@@ -100,6 +137,7 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 - Never activate a product or change a price without explicit human mapping
 - Never redesign layouts — polish only, no rewrites
 - showcase-web is a DIFFERENT repo — do not confuse the two
+- `active` is the correct column name — NEVER use `is_active`
 
 ---
 
