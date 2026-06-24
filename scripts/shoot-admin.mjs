@@ -5,9 +5,9 @@ import puppeteer from 'puppeteer-core'
 const CHROME =
   process.env.CHROME_PATH ||
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-const BASE = 'http://localhost:3000'
 const email = process.argv[2]
 const password = process.argv[3]
+const BASE = process.argv[4] || 'http://localhost:3000'
 
 const browser = await puppeteer.launch({
   executablePath: CHROME,
