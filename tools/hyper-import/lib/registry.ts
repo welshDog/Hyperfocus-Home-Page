@@ -6,6 +6,7 @@
 import type { ImportAdapter, ConnectInput } from './types'
 import { teemillAdapter } from '../importers/teemill'
 import { shopifyAdapter } from '../importers/shopify'
+import { etsyAdapter } from '../importers/etsy'
 import { feedAdapter } from '../importers/feed'
 import { csvAdapter } from '../importers/csv'
 import { jsonLdAdapter } from '../importers/jsonld'
@@ -14,6 +15,7 @@ import { jsonLdAdapter } from '../importers/jsonld'
 export const ADAPTERS: ImportAdapter[] = [
   teemillAdapter,
   shopifyAdapter,
+  etsyAdapter,
   feedAdapter,
   csvAdapter,
   jsonLdAdapter,

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import {
   Globe,
   ShoppingBag,
+  Store,
   Shirt,
   Rss,
   FileSpreadsheet,
@@ -28,6 +29,7 @@ type Source = {
   hint: string
   Icon: LucideIcon
   kind: Kind
+  inputLabel?: string
   placeholder?: string
 }
 
@@ -47,6 +49,15 @@ const SOURCES: Source[] = [
     Icon: ShoppingBag,
     kind: 'url',
     placeholder: 'https://store.myshopify.com',
+  },
+  {
+    id: 'etsy',
+    label: 'Etsy',
+    hint: 'An Etsy shop URL or shop name.',
+    Icon: Store,
+    kind: 'url',
+    inputLabel: 'Etsy shop URL or shop name',
+    placeholder: 'https://etsy.com/shop/YourShopName',
   },
   {
     id: 'teemill',
@@ -220,8 +231,7 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
             </button>
           ))}
           <p className="text-xs text-neutral-500 sm:col-span-2">
-            Printful, Printify, Gumroad, Etsy, WooCommerce & Squarespace coming
-            next.
+            Printful, Printify, Gumroad, WooCommerce & Squarespace coming next.
           </p>
         </div>
       )}
@@ -242,7 +252,7 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
             </label>
           ) : (
             <label className="flex flex-col gap-1.5 text-sm font-medium text-neutral-300">
-              {source.label}
+              {source.inputLabel ?? source.label}
               {source.kind === 'teemill' && (
                 <span className="font-normal text-neutral-500">
                   {' '}
