@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { ButtonLink } from '@/components/ui/Button'
 import { DemoForm } from '@/components/whitelabel/DemoForm'
+import { HyperImportSources } from '@/components/HyperImportSources'
 import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
@@ -187,6 +188,9 @@ export default function WhiteLabelPage() {
           </table>
         </div>
       </section>
+
+      {/* What we can migrate */}
+      <HyperImportSources />
 
       {/* Book a Demo */}
       <section id="book" className="mt-20 scroll-mt-24">
