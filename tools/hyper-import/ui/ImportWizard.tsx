@@ -8,6 +8,7 @@ import {
   Shirt,
   Package,
   Boxes,
+  Tag,
   Rss,
   FileSpreadsheet,
   Loader2,
@@ -84,6 +85,17 @@ const SOURCES: Source[] = [
     placeholder: 'paste your Printify API key',
     helpText: 'Find it at Account → Connections → API:',
     helpUrl: 'https://printify.com/app/account/api',
+  },
+  {
+    id: 'gumroad',
+    label: 'Gumroad',
+    hint: 'Your Gumroad products (paste your access token).',
+    Icon: Tag,
+    kind: 'key',
+    inputLabel: 'Gumroad Access Token',
+    placeholder: 'paste your Gumroad access token',
+    helpText: 'Find it at Settings → Advanced → Applications:',
+    helpUrl: 'https://app.gumroad.com/settings/advanced',
   },
   {
     id: 'teemill',
@@ -261,7 +273,7 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
             </button>
           ))}
           <p className="text-xs text-neutral-500 sm:col-span-2">
-            Gumroad, WooCommerce & Squarespace coming next.
+            WooCommerce & Squarespace coming next.
           </p>
         </div>
       )}

@@ -9,6 +9,7 @@ import { shopifyAdapter } from '../importers/shopify'
 import { etsyAdapter } from '../importers/etsy'
 import { printfulAdapter } from '../importers/printful'
 import { printifyAdapter } from '../importers/printify'
+import { gumroadAdapter } from '../importers/gumroad'
 import { feedAdapter } from '../importers/feed'
 import { csvAdapter } from '../importers/csv'
 import { jsonLdAdapter } from '../importers/jsonld'
@@ -20,6 +21,7 @@ export const ADAPTERS: ImportAdapter[] = [
   etsyAdapter,
   printfulAdapter,
   printifyAdapter,
+  gumroadAdapter,
   feedAdapter,
   csvAdapter,
   jsonLdAdapter,
