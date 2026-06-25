@@ -29,6 +29,7 @@ export interface Product {
 export type OrderStatus =
   | 'pending'
   | 'paid'
+  | 'needs_fulfilment'
   | 'fulfilled'
   | 'cancelled'
   | 'refunded'

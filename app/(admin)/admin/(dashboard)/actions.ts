@@ -121,7 +121,14 @@ export async function updateOrderStatus(formData: FormData): Promise<void> {
   await requireAdmin()
   const id = formData.get('id') as string
   const status = formData.get('status') as string
-  const allowed = ['pending', 'paid', 'fulfilled', 'cancelled', 'refunded']
+  const allowed = [
+    'pending',
+    'paid',
+    'needs_fulfilment',
+    'fulfilled',
+    'cancelled',
+    'refunded',
+  ]
   if (!id || !allowed.includes(status)) return
   const admin = createAdminClient()
   await admin.from('orders').update({ status }).eq('id', id)

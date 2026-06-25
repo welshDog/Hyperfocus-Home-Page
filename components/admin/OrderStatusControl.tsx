@@ -2,7 +2,14 @@
 
 import { updateOrderStatus } from '@/app/(admin)/admin/(dashboard)/actions'
 
-const STATUSES = ['pending', 'paid', 'fulfilled', 'cancelled', 'refunded']
+const STATUSES = [
+  'pending',
+  'paid',
+  'needs_fulfilment',
+  'fulfilled',
+  'cancelled',
+  'refunded',
+]
 
 export function OrderStatusControl({
   id,

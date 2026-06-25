@@ -3,6 +3,7 @@ import type Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase'
 import { fulfilViaTeemill } from '@/lib/teemill'
+import { sendOrderNotification } from '@/lib/email'
 
 // Stripe needs the raw request body for signature verification — never cache
 // or transform it.
@@ -65,6 +66,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'DB write failed.' }, { status: 500 })
   }
 
+  // Only fulfil once payment is actually confirmed.
+  if (!paid) {
+    return NextResponse.json({ received: true, unpaid: true })
+  }
+
   // 2) Claim fulfilment exactly once. The conditional update is atomic, so a
   //    duplicate delivery of this event flips nothing and is a no-op below.
   const { data: claimed } = await admin
@@ -79,64 +85,86 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, duplicate: true })
   }
 
-  // 3) Fulfil + decrement stock — runs at most once per order.
+  // 3) Route to the right fulfilment path — runs at most once per order.
+  type ProductRow = {
+    name: string | null
+    teemill_variant_id: string | null
+    stock: number | null
+  }
+  let product: ProductRow | null = null
   if (productId) {
-    const { data: product } = await admin
+    const { data } = await admin
       .from('products')
-      .select('teemill_variant_id, stock')
+      .select('name, teemill_variant_id, stock')
       .eq('id', productId)
       .maybeSingle()
+    product = data as ProductRow | null
+  }
 
-    // Apparel (has a Teemill variant) → request print-on-demand fulfilment.
-    if (product?.teemill_variant_id) {
-      const addr =
-        session.shipping_details?.address ?? session.customer_details?.address
-      const result = await fulfilViaTeemill({
-        variantRef: product.teemill_variant_id,
-        quantity: 1,
-        email,
-        address: {
-          name:
-            session.shipping_details?.name ??
-            session.customer_details?.name ??
-            '',
-          line1: addr?.line1 ?? '',
-          line2: addr?.line2 ?? undefined,
-          city: addr?.city ?? '',
-          postcode: addr?.postal_code ?? '',
-          country: addr?.country ?? '',
-        },
-        reference: session.id,
-      })
+  if (product?.teemill_variant_id) {
+    // Has a Teemill variant → auto print-on-demand fulfilment (mock unless live).
+    const addr =
+      session.shipping_details?.address ?? session.customer_details?.address
+    const result = await fulfilViaTeemill({
+      variantRef: product.teemill_variant_id,
+      quantity: 1,
+      email,
+      address: {
+        name:
+          session.shipping_details?.name ??
+          session.customer_details?.name ??
+          '',
+        line1: addr?.line1 ?? '',
+        line2: addr?.line2 ?? undefined,
+        city: addr?.city ?? '',
+        postcode: addr?.postal_code ?? '',
+        country: addr?.country ?? '',
+      },
+      reference: session.id,
+    })
 
-      if (!result.ok) {
-        // Release the claim so a Stripe retry can re-attempt fulfilment.
-        await admin
-          .from('orders')
-          .update({ fulfilled: false })
-          .eq('id', claimed.id)
-        console.error('[stripe webhook] Teemill fulfilment failed:', result.error)
-        return NextResponse.json({ error: 'Fulfilment failed.' }, { status: 500 })
-      }
-
-      await admin
-        .from('orders')
-        .update({ teemill_order_id: result.orderId, status: 'fulfilled' })
-        .eq('id', claimed.id)
-
-      console.log(
-        `[stripe webhook] order ${claimed.id} fulfilled via Teemill ` +
-          `(${result.mock ? 'MOCK' : 'LIVE'}) variant ${product.teemill_variant_id}`,
-      )
+    if (!result.ok) {
+      // Release the claim so a Stripe retry can re-attempt fulfilment.
+      await admin.from('orders').update({ fulfilled: false }).eq('id', claimed.id)
+      console.error('[stripe webhook] Teemill fulfilment failed:', result.error)
+      return NextResponse.json({ error: 'Fulfilment failed.' }, { status: 500 })
     }
 
-    // Decrement stock by 1, never below 0.
-    if (typeof product?.stock === 'number') {
-      await admin
-        .from('products')
-        .update({ stock: Math.max(product.stock - 1, 0) })
-        .eq('id', productId)
-    }
+    await admin
+      .from('orders')
+      .update({ teemill_order_id: result.orderId, status: 'fulfilled' })
+      .eq('id', claimed.id)
+
+    console.log(
+      `[stripe webhook] order ${claimed.id} fulfilled via Teemill ` +
+        `(${result.mock ? 'MOCK' : 'LIVE'}) variant ${product.teemill_variant_id}`,
+    )
+  } else {
+    // No Teemill variant → self-fulfilment (3D prints, gifts, bundles).
+    // Flag the order and email the owner; never call the Teemill API here.
+    await admin
+      .from('orders')
+      .update({ status: 'needs_fulfilment' })
+      .eq('id', claimed.id)
+
+    const note = await sendOrderNotification({
+      orderId: claimed.id,
+      productName: product?.name ?? 'Unknown product',
+      customerEmail: email,
+      amount,
+    })
+    console.log(
+      `[stripe webhook] order ${claimed.id} needs self-fulfilment ` +
+        `(owner emailed: ${note.sent})`,
+    )
+  }
+
+  // Decrement stock by 1, never below 0.
+  if (productId && typeof product?.stock === 'number') {
+    await admin
+      .from('products')
+      .update({ stock: Math.max(product.stock - 1, 0) })
+      .eq('id', productId)
   }
 
   return NextResponse.json({ received: true })

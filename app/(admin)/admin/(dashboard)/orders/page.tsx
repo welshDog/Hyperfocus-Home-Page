@@ -2,8 +2,17 @@ import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase'
 import { formatDate, cn } from '@/lib/utils'
 import { OrderStatusControl } from '@/components/admin/OrderStatusControl'
+import { updateOrderStatus } from '../actions'
 
-const FILTERS = ['all', 'pending', 'paid', 'fulfilled', 'cancelled', 'refunded']
+const FILTERS = [
+  'all',
+  'pending',
+  'paid',
+  'needs_fulfilment',
+  'fulfilled',
+  'cancelled',
+  'refunded',
+]
 
 interface OrderRow {
   id: string
@@ -58,7 +67,7 @@ export default async function AdminOrders({
                 : 'bg-white/5 text-neutral-300 hover:bg-white/10',
             )}
           >
-            {f}
+            {f.replace('_', ' ')}
           </Link>
         ))}
       </nav>
@@ -84,7 +93,13 @@ export default async function AdminOrders({
               </tr>
             )}
             {orders.map((o) => (
-              <tr key={o.id} className="border-b border-white/5 last:border-0">
+              <tr
+                key={o.id}
+                className={cn(
+                  'border-b border-white/5 last:border-0',
+                  o.status === 'needs_fulfilment' && 'bg-amber-500/5',
+                )}
+              >
                 <td className="px-5 py-3 font-medium">
                   {o.products?.name ?? '—'}
                 </td>
@@ -93,7 +108,21 @@ export default async function AdminOrders({
                   {formatDate(o.created_at)}
                 </td>
                 <td className="px-5 py-3">
-                  <OrderStatusControl id={o.id} status={o.status} />
+                  <div className="flex items-center gap-2">
+                    <OrderStatusControl id={o.id} status={o.status} />
+                    {o.status === 'needs_fulfilment' && (
+                      <form action={updateOrderStatus}>
+                        <input type="hidden" name="id" value={o.id} />
+                        <input type="hidden" name="status" value="fulfilled" />
+                        <button
+                          type="submit"
+                          className="whitespace-nowrap rounded-lg bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-300 hover:bg-amber-500/25"
+                        >
+                          Mark fulfilled
+                        </button>
+                      </form>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
