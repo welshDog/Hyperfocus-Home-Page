@@ -21,6 +21,8 @@ export interface Product {
   /** When set, the product is fulfilled externally (e.g. Teemill) — the shop
    *  links out to buy instead of using Stripe checkout. */
   external_url: string | null
+  /** Default Teemill variant to fulfil when sold via our own Stripe checkout. */
+  teemill_variant_id: string | null
   created_at: string
 }
 
@@ -36,7 +38,10 @@ export interface Order {
   product_id: string | null
   customer_email: string
   status: OrderStatus
+  amount: number | null
   stripe_session_id: string | null
+  fulfilled: boolean
+  teemill_order_id: string | null
   created_at: string
 }
 

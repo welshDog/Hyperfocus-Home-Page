@@ -60,6 +60,13 @@ export async function POST(req: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
+      // Collect a shipping address so orders can be fulfilled (e.g. Teemill).
+      shipping_address_collection: {
+        allowed_countries: [
+          'GB', 'IE', 'US', 'CA', 'AU', 'NZ', 'DE', 'FR', 'ES', 'IT', 'NL',
+          'BE', 'SE', 'NO', 'DK', 'FI', 'PT', 'AT', 'CH', 'PL',
+        ],
+      },
       line_items: [
         {
           quantity: 1,
