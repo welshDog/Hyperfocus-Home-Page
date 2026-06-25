@@ -31,6 +31,7 @@ export async function saveProduct(
   const price = Number(formData.get('price') ?? 0)
   const stock = Number(formData.get('stock') ?? 0)
   const active = formData.get('active') === 'on'
+  const externalUrl = ((formData.get('external_url') as string) || '').trim() || null
 
   if (!name) return { error: 'Name is required.' }
   if (!slug) slug = slugify(name)
@@ -74,7 +75,17 @@ export async function saveProduct(
 
   const images = [...kept, ...uploaded]
 
-  const row = { name, slug, description, category, price, stock, active, images }
+  const row = {
+    name,
+    slug,
+    description,
+    category,
+    price,
+    stock,
+    active,
+    images,
+    external_url: externalUrl,
+  }
 
   const { error } = id
     ? await admin.from('products').update(row).eq('id', id)

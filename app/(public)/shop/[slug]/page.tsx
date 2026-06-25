@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Check, Truck } from 'lucide-react'
+import { ArrowLeft, Check, Truck, ExternalLink } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
+import { ButtonLink } from '@/components/ui/Button'
 import { ProductGallery } from '@/components/shop/ProductGallery'
 import { BuyButton } from '@/components/shop/BuyButton'
 import { getProductBySlug } from '@/lib/products'
@@ -40,6 +41,7 @@ export default async function ProductPage({
   if (!product) notFound()
 
   const inStock = product.stock > 0
+  const isExternal = Boolean(product.external_url)
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -70,24 +72,52 @@ export default async function ProductPage({
             </div>
           )}
 
-          <p className="mt-6 inline-flex items-center gap-2 text-sm font-medium">
-            {inStock ? (
-              <span className="inline-flex items-center gap-1.5 text-brand dark:text-brand-200">
-                <Check className="h-4 w-4" /> In stock
-              </span>
-            ) : (
-              <span className="text-neutral-500">Currently unavailable</span>
-            )}
-          </p>
+          {isExternal ? (
+            <>
+              <p className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand dark:text-brand-200">
+                <Check className="h-4 w-4" /> Available now
+              </p>
 
-          <div className="mt-6">
-            <BuyButton productId={product.id} inStock={inStock} />
-          </div>
+              <div className="mt-6">
+                <ButtonLink
+                  href={product.external_url!}
+                  size="lg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto"
+                >
+                  Buy on Teemill
+                  <ExternalLink className="h-5 w-5" />
+                </ButtonLink>
+              </div>
 
-          <p className="mt-4 inline-flex items-center gap-2 text-sm text-neutral-500">
-            <Truck className="h-4 w-4" /> Made to order in South Wales · ships
-            worldwide
-          </p>
+              <p className="mt-4 inline-flex items-center gap-2 text-sm text-neutral-500">
+                <Truck className="h-4 w-4" /> Printed &amp; shipped on demand by
+                Teemill · ships worldwide
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mt-6 inline-flex items-center gap-2 text-sm font-medium">
+                {inStock ? (
+                  <span className="inline-flex items-center gap-1.5 text-brand dark:text-brand-200">
+                    <Check className="h-4 w-4" /> In stock
+                  </span>
+                ) : (
+                  <span className="text-neutral-500">Currently unavailable</span>
+                )}
+              </p>
+
+              <div className="mt-6">
+                <BuyButton productId={product.id} inStock={inStock} />
+              </div>
+
+              <p className="mt-4 inline-flex items-center gap-2 text-sm text-neutral-500">
+                <Truck className="h-4 w-4" /> Made to order in South Wales ·
+                ships worldwide
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: 'hyperfocus-mode.teemill.com' },
       { protocol: 'https', hostname: 'teemill.com' },
+      { protocol: 'https', hostname: 'images.podos.io' }, // Teemill product image CDN
     ],
   },
   experimental: {

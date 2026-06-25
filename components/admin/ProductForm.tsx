@@ -7,7 +7,7 @@ import { saveProduct, type FormState } from '@/app/(admin)/admin/(dashboard)/act
 import { Button } from '@/components/ui/Button'
 import type { Product } from '@/types'
 
-const CATEGORIES = ['3D Prints', 'Mugs', 'Gifts', 'Bundles']
+const CATEGORIES = ['3D Prints', 'Mugs', 'Gifts', 'Bundles', 'Apparel']
 const inputClass =
   'h-11 w-full rounded-xl border border-white/10 bg-card px-3 text-base text-neutral-100 placeholder:text-neutral-500 focus-visible:border-brand-300 focus-visible:outline-none'
 const labelClass = 'flex flex-col gap-1.5 text-sm font-medium text-neutral-300'
@@ -114,6 +114,21 @@ export function ProductForm({ product }: { product?: Product }) {
           PNG, JPG or WebP · up to 5MB each. The first image is the shop cover.
         </span>
       </div>
+
+      <label className={labelClass}>
+        External buy link{' '}
+        <span className="font-normal text-neutral-500">
+          (optional — e.g. Teemill. If set, the shop links out instead of using
+          Stripe checkout.)
+        </span>
+        <input
+          name="external_url"
+          type="url"
+          defaultValue={product?.external_url ?? ''}
+          placeholder="https://…"
+          className={inputClass}
+        />
+      </label>
 
       <label className="flex items-center gap-3 text-sm font-medium text-neutral-300">
         <input

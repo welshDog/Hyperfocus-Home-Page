@@ -29,13 +29,19 @@ export async function POST(req: Request) {
   // Server is the source of truth for price — never trust a client amount.
   const { data: product } = await supabase
     .from('products')
-    .select('id, name, slug, price, images, stock, active')
+    .select('id, name, slug, price, images, stock, active, external_url')
     .eq('id', productId)
     .eq('active', true)
     .maybeSingle()
 
   if (!product) {
     return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
+  }
+  if (product.external_url) {
+    return NextResponse.json(
+      { error: 'This product is sold via an external store.' },
+      { status: 400 },
+    )
   }
   if (product.stock <= 0) {
     return NextResponse.json({ error: 'Out of stock.' }, { status: 409 })

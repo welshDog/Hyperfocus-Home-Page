@@ -8,6 +8,7 @@ export const SHOP_CATEGORIES = [
   'Mugs',
   'Gifts',
   'Bundles',
+  'Apparel',
 ] as const
 
 export type ShopCategory = (typeof SHOP_CATEGORIES)[number]

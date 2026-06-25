@@ -6,6 +6,7 @@ export type ProductCategory =
   | 'Mugs'
   | 'Gifts'
   | 'Bundles'
+  | 'Apparel'
 
 export interface Product {
   id: string
@@ -17,6 +18,9 @@ export interface Product {
   category: ProductCategory | string
   stock: number
   active: boolean
+  /** When set, the product is fulfilled externally (e.g. Teemill) — the shop
+   *  links out to buy instead of using Stripe checkout. */
+  external_url: string | null
   created_at: string
 }
 
