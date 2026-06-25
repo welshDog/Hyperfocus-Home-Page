@@ -4,6 +4,8 @@ import { useState } from 'react'
 import {
   Globe,
   ShoppingBag,
+  ShoppingCart,
+  LayoutGrid,
   Store,
   Shirt,
   Package,
@@ -54,6 +56,22 @@ const SOURCES: Source[] = [
     Icon: ShoppingBag,
     kind: 'url',
     placeholder: 'https://store.myshopify.com',
+  },
+  {
+    id: 'woocommerce',
+    label: 'WooCommerce',
+    hint: 'Any WooCommerce store URL (public Store API).',
+    Icon: ShoppingCart,
+    kind: 'url',
+    placeholder: 'https://yourstore.com',
+  },
+  {
+    id: 'squarespace',
+    label: 'Squarespace',
+    hint: 'Your Squarespace shop/store page URL.',
+    Icon: LayoutGrid,
+    kind: 'url',
+    placeholder: 'https://yourstore.com/shop',
   },
   {
     id: 'etsy',
@@ -273,7 +291,7 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
             </button>
           ))}
           <p className="text-xs text-neutral-500 sm:col-span-2">
-            WooCommerce & Squarespace coming next.
+            Need another platform? Each one is a single adapter file away.
           </p>
         </div>
       )}
