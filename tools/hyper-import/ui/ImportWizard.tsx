@@ -6,6 +6,8 @@ import {
   ShoppingBag,
   Store,
   Shirt,
+  Package,
+  Boxes,
   Rss,
   FileSpreadsheet,
   Loader2,
@@ -22,7 +24,7 @@ import type { ImportResult } from '@/tools/hyper-import/lib/uploader'
 
 const STEPS = ['Source', 'Connect', 'Preview', 'Import']
 
-type Kind = 'url' | 'teemill' | 'file'
+type Kind = 'url' | 'teemill' | 'key' | 'file'
 type Source = {
   id: string // adapter id, or 'auto'
   label: string
@@ -31,6 +33,8 @@ type Source = {
   kind: Kind
   inputLabel?: string
   placeholder?: string
+  helpText?: string
+  helpUrl?: string
 }
 
 const SOURCES: Source[] = [
@@ -58,6 +62,28 @@ const SOURCES: Source[] = [
     kind: 'url',
     inputLabel: 'Etsy shop URL or shop name',
     placeholder: 'https://etsy.com/shop/YourShopName',
+  },
+  {
+    id: 'printful',
+    label: 'Printful',
+    hint: 'Your Printful products (paste your API key).',
+    Icon: Package,
+    kind: 'key',
+    inputLabel: 'Printful API Key',
+    placeholder: 'paste your Printful API key',
+    helpText: 'Find it at Dashboard → Settings → API:',
+    helpUrl: 'https://www.printful.com/dashboard/settings/api',
+  },
+  {
+    id: 'printify',
+    label: 'Printify',
+    hint: 'Your Printify products (paste your API key).',
+    Icon: Boxes,
+    kind: 'key',
+    inputLabel: 'Printify API Key',
+    placeholder: 'paste your Printify API key',
+    helpText: 'Find it at Account → Connections → API:',
+    helpUrl: 'https://printify.com/app/account/api',
   },
   {
     id: 'teemill',
@@ -125,7 +151,10 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
       const res = await previewProducts({
         adapterId: source.id === 'auto' ? undefined : source.id,
         url: source.kind === 'url' ? text : undefined,
-        apiKey: source.id === 'teemill' ? text || undefined : undefined,
+        apiKey:
+          source.kind === 'key' || source.id === 'teemill'
+            ? text || undefined
+            : undefined,
         csv: source.id === 'csv' ? csvText : undefined,
       })
       if (!res.products.length) {
@@ -183,7 +212,8 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
 
   const canConnect =
     source?.kind === 'teemill' ||
-    (source?.kind === 'url' && text.trim().length > 0) ||
+    ((source?.kind === 'url' || source?.kind === 'key') &&
+      text.trim().length > 0) ||
     (source?.kind === 'file' && csvText.length > 0)
 
   return (
@@ -231,7 +261,7 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
             </button>
           ))}
           <p className="text-xs text-neutral-500 sm:col-span-2">
-            Printful, Printify, Gumroad, WooCommerce & Squarespace coming next.
+            Gumroad, WooCommerce & Squarespace coming next.
           </p>
         </div>
       )}
@@ -251,21 +281,40 @@ export function ImportWizard({ onDone }: { onDone?: () => void }) {
               />
             </label>
           ) : (
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-neutral-300">
-              {source.inputLabel ?? source.label}
-              {source.kind === 'teemill' && (
-                <span className="font-normal text-neutral-500">
-                  {' '}
-                  (optional — leave blank to use your configured store)
-                </span>
+            <>
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-neutral-300">
+                {source.inputLabel ?? source.label}
+                {source.kind === 'teemill' && (
+                  <span className="font-normal text-neutral-500">
+                    {' '}
+                    (optional — leave blank to use your configured store)
+                  </span>
+                )}
+                <input
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={source.placeholder}
+                  type={source.kind === 'key' ? 'password' : 'text'}
+                  autoComplete="off"
+                  className="h-11 w-full rounded-xl border border-white/10 bg-card px-3 text-base text-neutral-100 placeholder:text-neutral-500 focus-visible:border-brand-300 focus-visible:outline-none"
+                />
+              </label>
+              {source.helpText && (
+                <p className="text-xs text-neutral-500">
+                  {source.helpText}{' '}
+                  {source.helpUrl && (
+                    <a
+                      href={source.helpUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-200 hover:underline"
+                    >
+                      {source.helpUrl.replace(/^https?:\/\//, '')}
+                    </a>
+                  )}
+                </p>
               )}
-              <input
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder={source.placeholder}
-                className="h-11 w-full rounded-xl border border-white/10 bg-card px-3 text-base text-neutral-100 placeholder:text-neutral-500 focus-visible:border-brand-300 focus-visible:outline-none"
-              />
-            </label>
+            </>
           )}
 
           {error && (
