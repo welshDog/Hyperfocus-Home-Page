@@ -21,3 +21,6 @@ dev-server.log
 
 .vercel
 .env*
+
+# generated exports (Teemill catalog dump etc — never commit)
+/exports
