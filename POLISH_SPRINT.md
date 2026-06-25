@@ -3,10 +3,10 @@
 
 ---
 
-## 🎉 ALL TASKS COMPLETE — SITE LIVE ✅ 2026-06-25
+## 🎉 ALL TASKS COMPLETE — DEPLOY READY ✅ 2026-06-25
 
-> Task 8 done. tsc clean. Webhook wired, mock-safe, ready to deploy.
-> **Next action: deploy + set STRIPE_WEBHOOK_SECRET on Vercel + register endpoint in Stripe dashboard**
+> Task 8 fully complete. tsc clean. Smart fulfilment routing wired.
+> **Next action: `vercel deploy --prod` + set STRIPE_WEBHOOK_SECRET on Vercel + register webhook in Stripe dashboard**
 
 ---
 
@@ -24,7 +24,7 @@
 | Footer Links — Showcase + Socials | ✅ DONE — 2026-06-25 |
 | Product Image Upload | ⏳ WIRED — needs deploy + round-trip test |
 | Teemill Catalog Export | ✅ DONE — 2026-06-25 (27 products / 169 variants) |
-| Task 8 — Stripe Webhook + Teemill Fulfilment | ✅ DONE — 2026-06-25 |
+| Task 8 — Stripe Webhook + Smart Fulfilment Routing | ✅ DONE — 2026-06-25 |
 
 ---
 
@@ -47,45 +47,60 @@ See commit history — all polished and live.
 ### Teemill Catalog Export ✅
 - Script: `scripts/teemill-export.ts` — run: `npx ts-node scripts/teemill-export.ts`
 - Output: `exports/teemill-products.json` (gitignored)
-- 27 products / 169 variants — all names, prices, imageUrls[], variants[].id
+- 27 products / 169 variants — names, prices, imageUrls[], variants[].id
 
-### Task 8 — Stripe Webhook + Teemill Fulfilment ✅
+### Task 8 — Stripe Webhook + Smart Fulfilment Routing ✅
 
 **Files created/updated:**
-- `app/api/webhooks/stripe/route.ts` — signature verify → record order → fulfilment → stock −1
+- `app/api/webhooks/stripe/route.ts` — signature verify → smart route → stock −1
 - `lib/teemill.ts` — create+confirm helper, mock-gated on `TEEMILL_LIVE`
-- DB migration: `orders.amount`, `orders.fulfilled`, `orders.teemill_order_id`, `products.teemill_variant_id`
-- 27 apparel variant IDs mapped to Supabase products ✅
-- Shipping address collection added to checkout (fulfilment needs it)
+- `lib/email.ts` — `sendOrderNotification()` via Resend, fails soft if key not set
+- DB migration: `orders.amount`, `orders.fulfilled`, `orders.teemill_order_id`, `products.teemill_variant_id`, `orders.status` extended with `needs_fulfilment`
 - `types` + `.env.local.example` updated
+
+**Smart fulfilment routing (the whole brain):**
+| Product type | Route | Status set |
+|---|---|---|
+| Apparel with `teemill_variant_id` | Teemill auto-fulfil (mock-gated) | `fulfilled` |
+| Bundles + 3D prints + gifts (`teemill_variant_id` NULL) | Self-fulfilment — email to ADMIN_EMAIL | `needs_fulfilment` |
+
+**Mission Control /admin/orders:**
+- `needs_fulfilment` rows tinted amber
+- Dedicated amber "Mark fulfilled" button (one click → `fulfilled`)
+- New "needs fulfilment" filter tab
+- Status dropdown includes `needs_fulfilment`
 
 **Guarantees:**
 - Raw-body Stripe signature verification
-- Idempotent order upsert on `stripe_session_id` — duplicate Stripe events are safe
-- Atomic `fulfilled` claim — stock decrements + Teemill fires exactly once
-- On Teemill failure, claim released so Stripe retry can re-attempt
+- Idempotent upsert on `stripe_session_id` — duplicate Stripe events safe
+- Atomic `fulfilled` claim — exactly-once fulfilment + stock decrement
+- Teemill failure releases claim so Stripe retry re-attempts
 - Webhook route is rate-limit EXEMPT — always
+- Email fails soft — missing RESEND_API_KEY doesn’t break the flow
 
 **Mock gate:**
-- `TEEMILL_LIVE=true` env var required to fire real Teemill orders
-- Default (unset) = mock mode — returns `mock_...` order id, zero network calls, safe to deploy now
+- `TEEMILL_LIVE=true` required to fire real Teemill orders
+- Default = mock mode, zero network calls, fully safe to deploy now
 - Logs show `(MOCK)` vs `(LIVE)` clearly
+
+**Indent note:** 2-space kept consistent with repo Prettier config (not a bug)
 
 ---
 
-## 🔓 Activation Gates (business/ops — no more code needed)
+## 🔓 Activation Gates (no more code needed)
 
 | Gate | Status | Action |
 |---|---|---|
-| Deploy + STRIPE_WEBHOOK_SECRET on Vercel | 💻 Ready to do | `vercel deploy --prod`, add env var, register https://welshdog.shop/api/webhooks/stripe in Stripe dashboard |
+| Deploy + `STRIPE_WEBHOOK_SECRET` on Vercel | 💻 Ready NOW | `vercel deploy --prod`, add env var, register https://welshdog.shop/api/webhooks/stripe in Stripe dashboard |
+| `RESEND_API_KEY` on Vercel | 💻 Ready NOW | Add to Vercel env vars for order notification emails |
 | Stripe Live Mode | ⏳ Blocked | Waiting on Companies House registration |
-| Teemill Orders API endpoint verify | 📋 One step | Open Teemill Orders API docs in browser → paste create-order example → match lib/teemill.ts |
-| Flip `TEEMILL_LIVE=true` | 📋 After above | Set on Vercel env vars |
+| Teemill apparel pagination fix | 💬 Optional | Ask Teemill support — only needed to auto-map remaining 26 apparel variantRefs |
+| Flip `TEEMILL_LIVE=true` | 📋 After Stripe Live | Set on Vercel env vars |
 | Clear `external_url` on apparel | 📋 After Stripe Live | Removes "Buy on Teemill" link-out → own checkout takes over |
 
 ---
 
-## 🧪 Local Test Checklist (run yourself)
+## 🧪 Local Test Checklist
 
 ```bash
 # 1. Set test keys in .env.local: STRIPE_SECRET_KEY=sk_test_...
@@ -93,11 +108,11 @@ See commit history — all polished and live.
 npm run dev:frontend
 # 3. Forward webhooks (new terminal)
 stripe listen --forward-to localhost:3000/api/webhooks/stripe
-# Copy the whsec_... into STRIPE_WEBHOOK_SECRET, restart dev
-# 4. Buy a 3D-print with test card 4242 4242 4242 4242
-#    Watch for webhook hit + check orders table in Supabase
-# 5. For Teemill mock path: clear external_url on one apparel,
-#    buy it → expect "fulfilled via Teemill (MOCK)" in logs
+# Copy whsec_... into STRIPE_WEBHOOK_SECRET, restart dev
+# 4a. Buy a 3D-print/bundle with test card 4242 4242 4242 4242
+#     → expect status=needs_fulfilment, amber in admin, email fired
+# 4b. For Teemill mock path: clear external_url on one apparel, buy it
+#     → expect status=fulfilled, "fulfilled via Teemill (MOCK)" in logs
 ```
 
 ---
@@ -131,4 +146,4 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
 
 ---
 
-*Built in Llanelli, South Wales 🏴󠁧󠁢󠁷󠁬󠁳󠁥 by @welshDog — for brains that don't switch off.*
+*Built in Llanelli, South Wales 🏴󠁧󠁢󠁷󠁬󠁳󠁥 by @welshDog — for brains that don’t switch off.*
