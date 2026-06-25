@@ -8,18 +8,20 @@
  * fulfilment chain can be built and tested before Stripe Live Mode and the
  * verified Teemill endpoints are in place.
  *
- * ⚠️ ENDPOINT NOT YET VERIFIED: the create/confirm paths below follow
- * Teemill's documented auth (Authorization: <private key> header, ?project=
- * param) but the live API docs are JavaScript-rendered and were not
- * machine-verified. Confirm the exact endpoint + payload against
- * https://teemill.com/api-docs/orders/ BEFORE setting TEEMILL_LIVE=true.
- * Until then the live branch never executes.
+ * Endpoints (confirmed):
+ *   POST https://api.teemill.com/v1/orders                    → create (draft)
+ *   POST https://api.teemill.com/v1/orders/{orderId}/confirm  → confirm (billable)
+ *   GET  https://api.teemill.com/v1/orders/{orderId}          → status
+ * Auth: Authorization: <private key> header + ?project=<project> param.
+ * Items require `variantRef` (the variant `ref` URL from the Catalog API).
+ *
+ * ⚠️ The create-order body (shipping field names) is best-effort and should be
+ * confirmed against one real test order before TEEMILL_LIVE=true.
  */
 
 export const TEEMILL_LIVE = process.env.TEEMILL_LIVE === 'true'
 
-// Verify the exact order path before going live (see header note).
-const API_BASE = 'https://teemill.com/omnis/v3'
+const API_BASE = 'https://api.teemill.com/v1'
 
 export interface FulfilmentAddress {
   name: string
@@ -31,7 +33,8 @@ export interface FulfilmentAddress {
 }
 
 export interface FulfilmentInput {
-  variantId: string
+  /** Teemill catalog variant `ref` (URL). */
+  variantRef: string
   quantity: number
   email: string
   address: FulfilmentAddress
@@ -56,13 +59,15 @@ export async function fulfilViaTeemill(
   }
 
   const key = process.env.TEEMILL_PRIVATE_KEY ?? ''
-  const project = process.env.TEEMILL_PROJECT_NAME ?? ''
+  // The Orders API ?project= value is the store slug (e.g. welshdog-wear-86371).
+  const project =
+    process.env.TEEMILL_PROJECT_NAME ?? process.env.TEEMILL_STORE ?? ''
   if (!key || !project) {
     return {
       ok: false,
       orderId: null,
       mock: false,
-      error: 'TEEMILL_PRIVATE_KEY / TEEMILL_PROJECT_NAME not configured',
+      error: 'TEEMILL_PRIVATE_KEY / project not configured',
     }
   }
   const headers = { Authorization: key, 'Content-Type': 'application/json' }
@@ -70,11 +75,11 @@ export async function fulfilViaTeemill(
 
   try {
     // 1) Create the order (draft).
-    const createRes = await fetch(`${API_BASE}/order?${q}`, {
+    const createRes = await fetch(`${API_BASE}/orders?${q}`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        items: [{ variant_id: input.variantId, quantity: input.quantity }],
+        items: [{ variantRef: input.variantRef, quantity: input.quantity }],
         email: input.email,
         shipping_address: {
           name: input.address.name,
@@ -110,10 +115,10 @@ export async function fulfilViaTeemill(
     }
 
     // 2) Confirm — the real, billable fulfilment step.
-    const confirmRes = await fetch(`${API_BASE}/order/${orderId}/confirm?${q}`, {
-      method: 'POST',
-      headers,
-    })
+    const confirmRes = await fetch(
+      `${API_BASE}/orders/${orderId}/confirm?${q}`,
+      { method: 'POST', headers },
+    )
     if (!confirmRes.ok) {
       return {
         ok: false,

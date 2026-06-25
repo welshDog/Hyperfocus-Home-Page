@@ -92,7 +92,7 @@ export async function POST(req: Request) {
       const addr =
         session.shipping_details?.address ?? session.customer_details?.address
       const result = await fulfilViaTeemill({
-        variantId: product.teemill_variant_id,
+        variantRef: product.teemill_variant_id,
         quantity: 1,
         email,
         address: {
