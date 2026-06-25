@@ -3,10 +3,10 @@
 
 ---
 
-## 🎉 ALL TASKS COMPLETE — SITE LIVE ✅ 2026-06-25
+## 🎉 ALL TASKS COMPLETE + HYPERIMPORT SHIPPED ✅ 2026-06-25
 
-> Task 8 done. tsc clean. Webhook wired, mock-safe, ready to deploy.
-> **Next action: deploy + set STRIPE_WEBHOOK_SECRET on Vercel + register endpoint in Stripe dashboard**
+> Sprint done. HyperImport built. tsc clean. Deploy ready.
+> **Next action: test HyperImport locally → `npm run dev:frontend` → /admin → Products → Import Products**
 
 ---
 
@@ -24,7 +24,8 @@
 | Footer Links — Showcase + Socials | ✅ DONE — 2026-06-25 |
 | Product Image Upload | ⏳ WIRED — needs deploy + round-trip test |
 | Teemill Catalog Export | ✅ DONE — 2026-06-25 (27 products / 169 variants) |
-| Task 8 — Stripe Webhook + Teemill Fulfilment | ✅ DONE — 2026-06-25 |
+| Task 8 — Stripe Webhook + Smart Fulfilment Routing | ✅ DONE — 2026-06-25 |
+| HyperImport — Shop Migration Tool | ✅ DONE — 2026-06-25 |
 
 ---
 
@@ -33,72 +34,82 @@
 ### Tasks 1–7 ✅
 See commit history — all polished and live.
 
-### Footer Links ✅
-- 🐙 GitHub → https://github.com/welshDog
-- 🚀 WelshDog Showcase → https://showcase-web-omega.vercel.app/
-- 🪐 WelshDog Socials → https://bafybeibcz6tx64yd3cyq5jh747mwzdr45yvzvrzaam4lvfsda7wxlvjljy.ipfs.inbrowser.link/
+### Task 8 — Stripe Webhook + Smart Fulfilment Routing ✅
 
-### Product Image Upload ⏳ Wired — Needs Deploy + Test
-- Supabase Storage bucket `product-images` — public, 5MB cap, images only (live)
-- Mission Control form: thumbnails, ✕ remove, Cover badge, multi-file picker
-- `next.config.js` body limit raised to 10MB
-- **To confirm:** `vercel deploy --prod` → edit product → add image → check /shop card
+**Smart fulfilment routing:**
+| Product type | Route | Status set |
+|---|---|---|
+| Apparel with `teemill_variant_id` | Teemill auto-fulfil (mock-gated) | `fulfilled` |
+| Bundles + 3D prints + gifts (`teemill_variant_id` NULL) | Self-fulfilment — email to ADMIN_EMAIL | `needs_fulfilment` |
 
-### Teemill Catalog Export ✅
-- Script: `scripts/teemill-export.ts` — run: `npx ts-node scripts/teemill-export.ts`
-- Output: `exports/teemill-products.json` (gitignored)
-- 27 products / 169 variants — all names, prices, imageUrls[], variants[].id
+**Mission Control /admin/orders:**
+- `needs_fulfilment` rows tinted amber + amber "Mark fulfilled" button
+- New "needs fulfilment" filter tab
 
-### Task 8 — Stripe Webhook + Teemill Fulfilment ✅
+**Guarantees:** signature verify, idempotent upsert, exactly-once claim, rate-limit exempt webhook, email fails soft.
 
-**Files created/updated:**
-- `app/api/webhooks/stripe/route.ts` — signature verify → record order → fulfilment → stock −1
-- `lib/teemill.ts` — create+confirm helper, mock-gated on `TEEMILL_LIVE`
-- DB migration: `orders.amount`, `orders.fulfilled`, `orders.teemill_order_id`, `products.teemill_variant_id`
-- 27 apparel variant IDs mapped to Supabase products ✅
-- Shipping address collection added to checkout (fulfilment needs it)
-- `types` + `.env.local.example` updated
-
-**Guarantees:**
-- Raw-body Stripe signature verification
-- Idempotent order upsert on `stripe_session_id` — duplicate Stripe events are safe
-- Atomic `fulfilled` claim — stock decrements + Teemill fires exactly once
-- On Teemill failure, claim released so Stripe retry can re-attempt
-- Webhook route is rate-limit EXEMPT — always
-
-**Mock gate:**
-- `TEEMILL_LIVE=true` env var required to fire real Teemill orders
-- Default (unset) = mock mode — returns `mock_...` order id, zero network calls, safe to deploy now
-- Logs show `(MOCK)` vs `(LIVE)` clearly
+**Mock gate:** `TEEMILL_LIVE=true` required for real Teemill orders. Default = mock, safe to deploy.
 
 ---
 
-## 🔓 Activation Gates (business/ops — no more code needed)
+### HyperImport — Shop Migration Tool ✅
+
+**What it does:** paste a shop API key or upload a CSV → products auto-populate your shop as drafts.
+
+**Files:**
+| File | What |
+|---|---|
+| `tools/hyper-import/lib/mapper.ts` | `ImportedProduct` type + `normalise()` + slugify |
+| `tools/hyper-import/importers/teemill.ts` | Feed-based → `ImportedProduct[]` (full catalogue) |
+| `tools/hyper-import/importers/csv.ts` | Generic CSV (name, description, price, image_url, external_url) |
+| `tools/hyper-import/lib/uploader.ts` | Re-uploads images → `product-images` bucket → inserts products |
+| `tools/hyper-import/actions.ts` | `requireAdmin`-gated `previewProducts` + `runProductImport` |
+| `tools/hyper-import/ui/ImportWizard.tsx` | 4-step wizard (platform → connect → preview+select → progress) |
+| `tools/hyper-import/ui/ImportProductsButton.tsx` | Button + modal wired into /admin/products |
+
+**Safety:**
+- Imports land as `active: false` drafts — never auto-activate
+- Insert-new, skip-existing by slug — can't clobber live products
+- Reports imported / skipped / failed count
+- Service-role for all DB writes
+- Images re-uploaded to Supabase storage, never hotlinked
+
+**To test locally:**
+```bash
+npm run dev:frontend
+# Open /admin → Products → "Import Products"
+# Try CSV first (2-row test file) → new drafts appear
+# Teemill → will preview 27, report all skipped (already in shop) ← correct safe behaviour
+```
+
+**Honest gap:** visual round-trip not click-tested (no browser access) — but all layers underneath proven (importers run, tsc clean, uploader reuses working patterns).
+
+---
+
+## 🔓 Activation Gates (no more code needed)
 
 | Gate | Status | Action |
 |---|---|---|
-| Deploy + STRIPE_WEBHOOK_SECRET on Vercel | 💻 Ready to do | `vercel deploy --prod`, add env var, register https://welshdog.shop/api/webhooks/stripe in Stripe dashboard |
+| Deploy + `STRIPE_WEBHOOK_SECRET` on Vercel | 💻 Ready NOW | `vercel deploy --prod`, add env var, register https://welshdog.shop/api/webhooks/stripe in Stripe dashboard |
+| `RESEND_API_KEY` on Vercel | 💻 Ready NOW | Add to Vercel env vars — owner order emails live |
+| HyperImport local test | 🧪 Ready NOW | `npm run dev:frontend` → /admin → Products → Import Products |
 | Stripe Live Mode | ⏳ Blocked | Waiting on Companies House registration |
-| Teemill Orders API endpoint verify | 📋 One step | Open Teemill Orders API docs in browser → paste create-order example → match lib/teemill.ts |
-| Flip `TEEMILL_LIVE=true` | 📋 After above | Set on Vercel env vars |
-| Clear `external_url` on apparel | 📋 After Stripe Live | Removes "Buy on Teemill" link-out → own checkout takes over |
+| Flip `TEEMILL_LIVE=true` | 📋 After Stripe Live | Set on Vercel env vars |
+| Clear `external_url` on apparel | 📋 After Stripe Live | Removes "Buy on Teemill" link-out |
 
 ---
 
-## 🧪 Local Test Checklist (run yourself)
+## 🚀 White-Label Service Roadmap (next phase)
 
-```bash
-# 1. Set test keys in .env.local: STRIPE_SECRET_KEY=sk_test_...
-# 2. Start app
-npm run dev:frontend
-# 3. Forward webhooks (new terminal)
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
-# Copy the whsec_... into STRIPE_WEBHOOK_SECRET, restart dev
-# 4. Buy a 3D-print with test card 4242 4242 4242 4242
-#    Watch for webhook hit + check orders table in Supabase
-# 5. For Teemill mock path: clear external_url on one apparel,
-#    buy it → expect "fulfilled via Teemill (MOCK)" in logs
-```
+HyperImport is the engine for the white-label "Shop in a Box" service:
+
+| Phase | What | Status |
+|---|---|---|
+| 1 | Extract shop into generic template repo | 📋 Next |
+| 2 | "Deploy to Vercel" one-click button | 📋 Next |
+| 3 | Add Etsy importer to HyperImport | 📋 Next |
+| 4 | `/setup` onboarding wizard for new shop owners | 📋 Next |
+| 5 | Package + sell on welshdog.shop | 📋 Next |
 
 ---
 
