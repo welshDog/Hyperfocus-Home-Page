@@ -3,10 +3,10 @@
 
 ---
 
-## 🎉 SPRINT COMPLETE — SITE LIVE ✅ 2026-06-24
+## 🎉 ALL TASKS COMPLETE — SITE LIVE ✅ 2026-06-25
 
-> All tasks done. tsc clean. Deployed and confirmed live at welshdog.shop.
-> **Next session: Task 8 — Stripe Webhook + Teemill Orders API fulfilment**
+> Task 8 done. tsc clean. Webhook wired, mock-safe, ready to deploy.
+> **Next action: deploy + set STRIPE_WEBHOOK_SECRET on Vercel + register endpoint in Stripe dashboard**
 
 ---
 
@@ -23,122 +23,86 @@
 | Task 7 — Analytics & Error Monitoring | ✅ DONE — 2026-06-24 |
 | Footer Links — Showcase + Socials | ✅ DONE — 2026-06-25 |
 | Product Image Upload | ⏳ WIRED — needs deploy + round-trip test |
-| Teemill Catalog Export | ✅ DONE — 2026-06-25 |
-| Task 8 — Stripe Webhook + Teemill Fulfilment | 📋 Next session |
+| Teemill Catalog Export | ✅ DONE — 2026-06-25 (27 products / 169 variants) |
+| Task 8 — Stripe Webhook + Teemill Fulfilment | ✅ DONE — 2026-06-25 |
 
 ---
 
 ## 📦 What Shipped
 
-### Task 1 — Products ✅
-- 19 products: priced, stocked, active = true in Supabase
-- DB column is `active` (NOT `is_active` — code correct, brief was wrong)
-- Bundle prices fixed: Desk Setup £31.99, Princess Vanity £32.99
-- Mug of Tee Bundle = mug + t-shirt (Teemill)
-
-### Task 2 — Homepage ✅
-- Featured products strip under hero (3–4 cards, active products)
-- "3D prints, mugs, gifts, and bundles made in South Wales." hero line
-- ND-first empty state if no active products
-
-### Task 3 — Shop ✅
-- Persistent "View →" cue on cards (brand-teal on hover, touch-friendly)
-- Sticky category filters (top-16, clears navbar, mobile + desktop)
-- ND-first empty states per category
-- Default-to-All / never-empty logic confirmed correct
-
-### Task 4 — Content ✅
-- **Blog:** Featured posts strip (3 newest), subscribe copy updated
-- **About:** Long paragraphs broken into scannable chunks
-- **Contact:** Human copy added; fake socials hidden; footer → "Made in South Wales, with care ♥"
-- **White-label:** Tier table live with real prices, CTAs: "Book a demo" + "Explore pricing"
-
-#### White-label Tier Prices ✅ (confirmed by Lyndz)
-| Tier | Price | What they get | Timeline | Support |
-|---|---|---|---|---|
-| **Starter** | **£297 one-off** | Shop + blog, self-managed | 1–2 weeks | Email |
-| **Pro** | **£597 one-off** | Full setup + custom branding + 30 days support | 2–3 weeks | Priority email |
-| **Done For You** | **£1,497 one-off** | Everything built, launched, handed over | 3–4 weeks | 30-day handholding |
-
-### Task 5 — Admin UX ✅
-- Colour-coded stat cards: Products=teal, Orders=green, Leads=amber, Blog=violet
-- Recent Activity placeholder section
-- Products hint banner + filter tabs: All / Live / Drafts / Out of Stock
-- Friendly empty states: Orders, Leads, Subscribers
-
-### Task 6 — Agents Lab ✅
-- Products Watcher: `checkProductHealth()` server action, real DB check
-- Status badges: green pulse / grey / red
-- Descriptions + Health/Network legend + tooltips
-
-### Task 7 — Analytics ✅
-- `@vercel/analytics@^2.0.1` + `<Analytics />` in root layout
-- Error logging on `/api/leads` + `/api/checkout`
+### Tasks 1–7 ✅
+See commit history — all polished and live.
 
 ### Footer Links ✅
 - 🐙 GitHub → https://github.com/welshDog
 - 🚀 WelshDog Showcase → https://showcase-web-omega.vercel.app/
 - 🪐 WelshDog Socials → https://bafybeibcz6tx64yd3cyq5jh747mwzdr45yvzvrzaam4lvfsda7wxlvjljy.ipfs.inbrowser.link/
-- All new tab, aria-labels, muted grey → teal on hover
 
 ### Product Image Upload ⏳ Wired — Needs Deploy + Test
-- Supabase Storage bucket `product-images` — public, 5MB cap, images only (already live)
-- Upload via service-role admin client (requireAdmin-gated)
-- Mission Control product form: thumbnails, ✕ remove, Cover badge, multi-file picker
-- `saveProduct` merges kept + new URLs into `images[]`
+- Supabase Storage bucket `product-images` — public, 5MB cap, images only (live)
+- Mission Control form: thumbnails, ✕ remove, Cover badge, multi-file picker
 - `next.config.js` body limit raised to 10MB
 - **To confirm:** `vercel deploy --prod` → edit product → add image → check /shop card
 
-### Teemill Catalog Export ✅ — 2026-06-25
-> **Purpose:** Archive all products before leaving Teemill. Variant IDs also used for Task 8 fulfilment.
+### Teemill Catalog Export ✅
+- Script: `scripts/teemill-export.ts` — run: `npx ts-node scripts/teemill-export.ts`
+- Output: `exports/teemill-products.json` (gitignored)
+- 27 products / 169 variants — all names, prices, imageUrls[], variants[].id
 
-- Script: `scripts/teemill-export.ts` (read-only, never touches Orders API)
-- Run: `npx ts-node scripts/teemill-export.ts`
-- Output: `exports/teemill-products.json` (add `exports/` to `.gitignore`)
-- **Result: 27 products / 169 variants exported and verified**
-- Each product has: `name`, `description`, `price`, `category`, `buyUrl`, `imageUrls[]` (4 colourway images), `variants[]` with `id`, `sku`, `size`, `color`, `price`, `availability`, `imageUrl`, `link`
-- Example: "Beware I'm DYSEXIC Cap" → £33, 4 images, variants in Black/Oat/Navy/Evergreen
-- `variant.id` (e.g. `89199724`) = the identifier the Orders API needs for fulfilment → feeds into Task 8
-- Bonus: 4 colourway images per product → can enrich Supabase apparel with multiple images
-- `tsconfig.json` ts-node override added (commonjs/node/es2020) — Next build unaffected
+### Task 8 — Stripe Webhook + Teemill Fulfilment ✅
+
+**Files created/updated:**
+- `app/api/webhooks/stripe/route.ts` — signature verify → record order → fulfilment → stock −1
+- `lib/teemill.ts` — create+confirm helper, mock-gated on `TEEMILL_LIVE`
+- DB migration: `orders.amount`, `orders.fulfilled`, `orders.teemill_order_id`, `products.teemill_variant_id`
+- 27 apparel variant IDs mapped to Supabase products ✅
+- Shipping address collection added to checkout (fulfilment needs it)
+- `types` + `.env.local.example` updated
+
+**Guarantees:**
+- Raw-body Stripe signature verification
+- Idempotent order upsert on `stripe_session_id` — duplicate Stripe events are safe
+- Atomic `fulfilled` claim — stock decrements + Teemill fires exactly once
+- On Teemill failure, claim released so Stripe retry can re-attempt
+- Webhook route is rate-limit EXEMPT — always
+
+**Mock gate:**
+- `TEEMILL_LIVE=true` env var required to fire real Teemill orders
+- Default (unset) = mock mode — returns `mock_...` order id, zero network calls, safe to deploy now
+- Logs show `(MOCK)` vs `(LIVE)` clearly
 
 ---
 
-## 📋 Task 8 — Stripe Webhook + Teemill Fulfilment (Next Session)
+## 🔓 Activation Gates (business/ops — no more code needed)
 
-> **Start here next session. Teemill variant IDs are ready in exports/teemill-products.json.**
-> **NOTE: Build + mock only until Stripe Live Mode is unlocked (blocked on Companies House reg).**
+| Gate | Status | Action |
+|---|---|---|
+| Deploy + STRIPE_WEBHOOK_SECRET on Vercel | 💻 Ready to do | `vercel deploy --prod`, add env var, register https://welshdog.shop/api/webhooks/stripe in Stripe dashboard |
+| Stripe Live Mode | ⏳ Blocked | Waiting on Companies House registration |
+| Teemill Orders API endpoint verify | 📋 One step | Open Teemill Orders API docs in browser → paste create-order example → match lib/teemill.ts |
+| Flip `TEEMILL_LIVE=true` | 📋 After above | Set on Vercel env vars |
+| Clear `external_url` on apparel | 📋 After Stripe Live | Removes "Buy on Teemill" link-out → own checkout takes over |
 
-### The flow
+---
+
+## 🧪 Local Test Checklist (run yourself)
+
+```bash
+# 1. Set test keys in .env.local: STRIPE_SECRET_KEY=sk_test_...
+# 2. Start app
+npm run dev:frontend
+# 3. Forward webhooks (new terminal)
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+# Copy the whsec_... into STRIPE_WEBHOOK_SECRET, restart dev
+# 4. Buy a 3D-print with test card 4242 4242 4242 4242
+#    Watch for webhook hit + check orders table in Supabase
+# 5. For Teemill mock path: clear external_url on one apparel,
+#    buy it → expect "fulfilled via Teemill (MOCK)" in logs
 ```
-Customer buys on welshdog.shop (Stripe checkout)
-  ↓
-Stripe fires checkout.session.completed webhook
-  ↓
-/api/webhooks/stripe/route.ts catches it
-  ↓
-Inserts order row in Supabase orders table
-  ↓
-For Teemill products: calls Teemill Create Order API → Confirm Order API
-  ↓
-Teemill prints + ships direct to customer (white-label)
-```
-
-### Build steps
-1. Create `/api/webhooks/stripe/route.ts`
-2. Verify Stripe signature (`STRIPE_WEBHOOK_SECRET` from env)
-3. Insert into `orders`: `product_id`, `status`, `amount`, `stripe_session_id`
-4. For apparel/Teemill products: POST to Teemill Orders API with `variant.id` from catalog export
-5. Auth: `Authorization: TEEMILL_PRIVATE_KEY` header + `?project=TEEMILL_PROJECT_NAME` param
-6. Decrement `stock` on the product by 1 in Supabase
-7. Register in Stripe dashboard: `https://welshdog.shop/api/webhooks/stripe`
-8. **DO NOT call Confirm Order in real until Stripe Live is active**
 
 ---
 
 ## 🧠 HYPER-SKILLs Guardrails
-
-Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 
 | Skill | File | When |
 |---|---|---|
@@ -163,6 +127,7 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 | `.env` files | NEVER commit |
 | Supabase | Use existing tables/RLS — do NOT drop or recreate |
 | Column name | `active` — NEVER `is_active` |
+| Stripe webhook | Rate-limit EXEMPT — always |
 
 ---
 
