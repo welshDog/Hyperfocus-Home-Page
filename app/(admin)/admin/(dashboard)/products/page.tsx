@@ -3,6 +3,7 @@ import { Plus, Pencil, Info } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase'
 import { formatPrice, cn } from '@/lib/utils'
 import { ButtonLink } from '@/components/ui/Button'
+import { ImportProductsButton } from '@/tools/hyper-import/ui/ImportProductsButton'
 import { toggleProductActive } from '../actions'
 import type { Product } from '@/types'
 
@@ -59,9 +60,12 @@ export default async function AdminProducts({
             {products.length} of {all.length}
           </p>
         </div>
-        <ButtonLink href="/admin/products/new">
-          <Plus className="h-4 w-4" /> Add product
-        </ButtonLink>
+        <div className="flex items-center gap-2">
+          <ImportProductsButton />
+          <ButtonLink href="/admin/products/new">
+            <Plus className="h-4 w-4" /> Add product
+          </ButtonLink>
+        </div>
       </header>
 
       {/* Hint banner */}
