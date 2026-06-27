@@ -1,10 +1,23 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
-import matter from 'gray-matter'
+import { parse as parseYaml } from 'yaml'
 import { remark } from 'remark'
 import html from 'remark-html'
 
 const BLOG_DIR = join(process.cwd(), 'content', 'blog')
+
+/**
+ * Minimal front-matter parser. Replaces the unmaintained `gray-matter`, whose
+ * pinned `js-yaml@3` carried a merge-key DoS advisory. Splits a leading `---`
+ * YAML block and parses it with the maintained `yaml` package (YAML 1.2).
+ */
+function matter(raw: string): { data: Record<string, any>; content: string } {
+  const input = raw.replace(/^\uFEFF/, '') // strip BOM
+  const match = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n?/.exec(input)
+  if (!match) return { data: {}, content: input }
+  const data = (parseYaml(match[1]) as Record<string, any>) ?? {}
+  return { data, content: input.slice(match[0].length) }
+}
 
 /** Category filter tabs for the blog. 'All' is a UI-only pseudo-category. */
 export const BLOG_CATEGORIES = [
