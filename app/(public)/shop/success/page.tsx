@@ -39,11 +39,12 @@ async function recordOrder(sessionId: string): Promise<string | null> {
   return email
 }
 
-export default async function SuccessPage({
-  searchParams,
-}: {
-  searchParams: { session_id?: string }
-}) {
+export default async function SuccessPage(
+  props: {
+    searchParams: Promise<{ session_id?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
   const sessionId = searchParams.session_id
   const email = sessionId ? await recordOrder(sessionId).catch(() => null) : null
 

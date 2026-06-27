@@ -1,12 +1,12 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 
 type CookieToSet = { name: string; value: string; options: CookieOptions }
 
 /** Cookie-aware Supabase client for Server Components / Route Handlers.
  *  Carries the auth session via cookies (for admin auth). */
 export function createClient() {
-  const cookieStore = cookies()
+  const cookieStore = (cookies() as unknown as UnsafeUnwrappedCookies)
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

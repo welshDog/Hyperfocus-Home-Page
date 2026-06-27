@@ -8,11 +8,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function AdminLoginPage({
-  searchParams,
-}: {
-  searchParams: { error?: string }
-}) {
+export default async function AdminLoginPage(
+  props: {
+    searchParams: Promise<{ error?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
   return (
     <div className="flex min-h-dvh items-center justify-center px-4">
       <div className="w-full max-w-sm">

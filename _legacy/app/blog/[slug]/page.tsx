@@ -1,7 +1,8 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
+export default async function BlogPost(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   return (
     <main>
       <Nav />
@@ -15,5 +16,5 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
       </article>
       <Footer />
     </main>
-  )
+  );
 }

@@ -11,11 +11,12 @@ export const metadata: Metadata = {
     'Honest writing on ADHD, dyslexia, neurodiversity, tech, and the creative life — by Lyndon Williams (WelshDog).',
 }
 
-export default function BlogIndex({
-  searchParams,
-}: {
-  searchParams: { category?: string }
-}) {
+export default async function BlogIndex(
+  props: {
+    searchParams: Promise<{ category?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
   const requested = searchParams.category
   const active = BLOG_CATEGORIES.includes(requested as never)
     ? (requested as string)

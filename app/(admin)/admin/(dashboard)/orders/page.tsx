@@ -38,11 +38,12 @@ async function getOrders(status: string): Promise<OrderRow[]> {
   }
 }
 
-export default async function AdminOrders({
-  searchParams,
-}: {
-  searchParams: { status?: string }
-}) {
+export default async function AdminOrders(
+  props: {
+    searchParams: Promise<{ status?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
   const active = FILTERS.includes(searchParams.status ?? '')
     ? (searchParams.status as string)
     : 'all'

@@ -40,11 +40,12 @@ async function getProducts(): Promise<Product[]> {
   }
 }
 
-export default async function AdminProducts({
-  searchParams,
-}: {
-  searchParams: { filter?: string }
-}) {
+export default async function AdminProducts(
+  props: {
+    searchParams: Promise<{ filter?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
   const active = FILTERS.some((f) => f.key === searchParams.filter)
     ? (searchParams.filter as string)
     : 'all'

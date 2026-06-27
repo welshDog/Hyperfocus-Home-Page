@@ -12,11 +12,12 @@ import { ogImage } from '@/lib/og'
 
 export const revalidate = 60
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string }
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ slug: string }>
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const product = await getProductBySlug(params.slug)
   if (!product) return { title: 'Product not found' }
   return {
@@ -32,11 +33,12 @@ export async function generateMetadata({
   }
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: { slug: string }
-}) {
+export default async function ProductPage(
+  props: {
+    params: Promise<{ slug: string }>
+  }
+) {
+  const params = await props.params;
   const product = await getProductBySlug(params.slug)
   if (!product) notFound()
 

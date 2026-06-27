@@ -14,11 +14,12 @@ export const metadata: Metadata = {
     'Original 3D-printed gear, mugs, and personalised gifts from WelshDog Designs.',
 }
 
-export default async function ShopPage({
-  searchParams,
-}: {
-  searchParams: { category?: string }
-}) {
+export default async function ShopPage(
+  props: {
+    searchParams: Promise<{ category?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
   const requested = searchParams.category
   const active = SHOP_CATEGORIES.includes(requested as never)
     ? (requested as string)
