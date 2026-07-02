@@ -10,6 +10,7 @@ import {
   FileText,
   Bot,
   Mail,
+  Music,
   Terminal,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,7 @@ const nav = [
   { href: '/admin/orders', label: 'Orders', Icon: ShoppingCart },
   { href: '/admin/leads', label: 'Leads', Icon: Inbox, badgeKey: 'leads' },
   { href: '/admin/blog', label: 'Blog', Icon: FileText },
+  { href: '/admin/tracks', label: 'Tracks', Icon: Music },
   { href: '/admin/agents', label: 'Agents Lab', Icon: Bot },
   { href: '/admin/subscribers', label: 'Subscribers', Icon: Mail },
 ]

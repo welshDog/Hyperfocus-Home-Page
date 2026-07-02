@@ -188,3 +188,61 @@ export async function togglePostPublished(formData: FormData): Promise<void> {
     .eq('id', id)
   revalidatePath('/admin/blog')
 }
+
+// ───────────────────────── Playlist tracks ─────────────────────────
+export type TrackFormState = { error?: string; ok?: boolean } | undefined
+
+export async function saveTrack(
+  _prev: TrackFormState,
+  formData: FormData,
+): Promise<TrackFormState> {
+  await requireAdmin()
+  const admin = createAdminClient()
+
+  const id = (formData.get('id') as string) || null
+  const title = (formData.get('title') as string)?.trim()
+  const artist = (formData.get('artist') as string)?.trim()
+  // Paths must exactly match storage.objects.name — a leading slash is
+  // never valid there, so strip it rather than let playback silently break.
+  const audioPath = ((formData.get('audio_path') as string) || '')
+    .trim()
+    .replace(/^\/+/, '')
+  const sortOrder = Number(formData.get('sort_order') ?? 0)
+  const isPublished = formData.get('is_published') === 'on'
+
+  if (!title) return { error: 'Title is required.' }
+  if (!artist) return { error: 'Artist is required.' }
+  if (!audioPath) return { error: 'Audio path is required — the exact file name in the music bucket.' }
+  if (!Number.isInteger(sortOrder) || sortOrder < 0) {
+    return { error: 'Sort order must be a whole number, 0 or more.' }
+  }
+
+  const row = {
+    title,
+    artist,
+    audio_path: audioPath,
+    sort_order: sortOrder,
+    is_published: isPublished,
+  }
+
+  const { error } = id
+    ? await admin.from('playlist_tracks').update(row).eq('id', id)
+    : await admin.from('playlist_tracks').insert(row)
+
+  if (error) return { error: 'Could not save the track. Give it another go.' }
+
+  revalidatePath('/admin/tracks')
+  revalidatePath('/', 'layout') // footer player lives in the shared layout
+  return { ok: true }
+}
+
+export async function toggleTrackPublished(formData: FormData): Promise<void> {
+  await requireAdmin()
+  const id = formData.get('id') as string
+  const next = formData.get('next') === 'true'
+  if (!id) return
+  const admin = createAdminClient()
+  await admin.from('playlist_tracks').update({ is_published: next }).eq('id', id)
+  revalidatePath('/admin/tracks')
+  revalidatePath('/', 'layout')
+}

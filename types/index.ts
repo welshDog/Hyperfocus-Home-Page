@@ -80,3 +80,19 @@ export interface Subscriber {
   email: string
   created_at: string
 }
+
+export interface PlaylistTrack {
+  id: string
+  title: string
+  artist: string
+  /** Must exactly match `storage.objects.name` in the `music` bucket. */
+  audio_path: string
+  duration_seconds: number | null
+  sort_order: number
+  is_published: boolean
+  created_at: string
+}
+
+/** Admin view of a track — DB row plus whether the referenced file
+ *  actually exists in the `music` Storage bucket. */
+export type AdminPlaylistTrack = PlaylistTrack & { storage_exists: boolean }
