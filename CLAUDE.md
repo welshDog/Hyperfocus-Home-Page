@@ -29,12 +29,14 @@ Current ground truth:
 - `playlist_tracks` plus Supabase Storage bucket `music` are already wired and working
 - the last real bug was a path mismatch between `playlist_tracks.audio_path` and `storage.objects.name`
 - that playback mismatch is now fixed
+- the repo uses a root-level layout (`app/`, `components/`, `lib/`, `types/`) — the `src/` structure shown later in this file is historical and was never adopted
 
-Current approved next feature:
+Shipped 2026-07-02 (do not rebuild):
 
-- build `/admin/tracks`
-- keep admin metadata editing as the workflow
-- add a CLI audit guardrail so Storage/DB path drift is caught early
+- `/admin/tracks` — playlist metadata editing with `storage_exists` badge
+- `npm run audit:playlist` — CLI guardrail catching Storage/DB path drift
+
+No approved next feature — ask the human first.
 
 Current source docs, in order:
 
@@ -49,9 +51,9 @@ If this file conflicts with `AGENT-START.md` or the newer playlist spec, the new
 ## Repo & Stack
 
 - **Repo:** `welshDog/Hyperfocus-Home-Page` (this repo)
-- **Framework:** Next.js 14+ with TypeScript, App Router
+- **Framework:** Next.js 15 (15.5.19) with TypeScript, App Router
 - **Styling:** Tailwind CSS
-- **Database + Auth:** Supabase (already configured — check existing `.env.local` and `src/lib/supabase.ts`)
+- **Database + Auth:** Supabase (already configured — check existing `.env.local` and `lib/supabase.ts`)
 - **Payments:** Stripe (card) + optional Web3 toggle
 - **Blog:** MDX files in `content/blog/` + Supabase for metadata
 - **Hosting:** Vercel

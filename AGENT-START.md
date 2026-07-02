@@ -3,7 +3,7 @@
 
 **Repo:** welshDog/Hyperfocus-Home-Page  
 **Live site:** https://welshdog.shop  
-**Stack:** Next.js 14.2.35 / Supabase / Vercel  
+**Stack:** Next.js 15.5.19 / Supabase / Vercel  
 **Branch:** main  
 **Owner:** Lyndon Williams — Llanelli, South Wales 🏴󠁧󠁢󠁷󠁬󠁳󠁥  
 **Tone:** Neurodivergent-first. Playful. Honest. Zero corporate fluff.
@@ -51,12 +51,19 @@ Blog, Agents Lab, Subscribers.
 - Design spec already written:
   - `docs/superpowers/specs/2026-07-01-playlist-admin-cli-audit-design.md`
 
+### Playlist Admin + CLI Audit V1 — SHIPPED ✅ (2026-07-02)
+- `/admin/tracks` live in Mission Control (Tracks in sidebar): table of all
+  tracks with `storage_exists` badge (OK / Missing), inline add + edit for
+  `title`, `artist`, `audio_path`, `sort_order`, `is_published`
+- CLI guardrail: `npm run audit:playlist` (`scripts/audit-playlist-paths.mjs`)
+  reports Matched / Missing / Unused, `--sql` prints safe UPDATE suggestions
+  (never applies them), exits 1 on missing files so it can gate deploys
+- Per spec, V1 deliberately has NO upload UI, cover art, or auto-fix logic
+
 ### What To Build Next
-- Add `/admin/tracks`
-- Show track metadata and a `storage_exists` status badge
-- Allow editing `title`, `artist`, `audio_path`, `sort_order`, `is_published`
-- Add CLI audit script for path mismatch detection
-- Do **not** build upload UI, cover art management, or auto-fix logic in V1
+- No approved next feature yet — ask the human before starting anything new
+- Spec'd nice-to-haves (NOT approved): uploader in `/admin/tracks`, cover art,
+  import-from-storage helper, pre-deploy audit hook in CI
 
 ---
 
@@ -71,7 +78,8 @@ Read these in order:
 Do not restart the old sprint.
 Do not rebuild the footer player.
 Do not redesign the homepage layout.
-Continue from the playlist admin + CLI audit spec.
+The playlist admin + CLI audit spec is SHIPPED (2026-07-02) — do not rebuild it.
+Ask the human what's next before starting new features.
 
 ---
 
@@ -135,8 +143,8 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 
 ## 🚫 Hard Rules — Never Break These
 
-- Next.js stays at 14.2.35 — NO upgrades ever
-- gray-matter stays at 4.0.3 — NO changes
+- Next.js stays on 15.x (currently 15.5.19, upgraded from 14 in the 2026-06 security audit) — NO major upgrades without explicit human sign-off, and NEVER downgrade back to 14
+- Frontmatter parsing uses the `yaml` package + local parser — gray-matter was REMOVED for security (unmaintained, js-yaml vulns). Never reintroduce it
 - Never commit .env files — not even .env.example with real values
 - Never drop or recreate Supabase tables — use existing schema + RLS
 - Never push directly to main without running the pre-commit hook
@@ -151,8 +159,8 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 
 | Path | What it is |
 |---|---|
-| POLISH_SPRINT.md | Active sprint brief — read this second |
-| app/ | Next.js 14 app router pages |
+| POLISH_SPRINT.md | Historical sprint brief — reference only |
+| app/ | Next.js 15 app router pages |
 | components/ | Shared UI components |
 | content/ | Blog MDX/markdown files |
 | lib/ | Supabase client + helpers |
