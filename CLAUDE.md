@@ -18,6 +18,34 @@ The North Star: someone lands on the homepage and within 10 seconds knows — th
 
 ---
 
+## ✅ Current Repo Reality — 2026-07-01
+
+This file contains the original build brief, but the repo is no longer at Phase 1.
+
+Current ground truth:
+
+- core shop, blog, admin, HyperImport, and webhook work are already shipped
+- the homepage footer playlist player is now live
+- `playlist_tracks` plus Supabase Storage bucket `music` are already wired and working
+- the last real bug was a path mismatch between `playlist_tracks.audio_path` and `storage.objects.name`
+- that playback mismatch is now fixed
+
+Current approved next feature:
+
+- build `/admin/tracks`
+- keep admin metadata editing as the workflow
+- add a CLI audit guardrail so Storage/DB path drift is caught early
+
+Current source docs, in order:
+
+1. `AGENT-START.md`
+2. `docs/superpowers/specs/2026-07-01-playlist-admin-cli-audit-design.md`
+3. this file
+
+If this file conflicts with `AGENT-START.md` or the newer playlist spec, the newer docs win.
+
+---
+
 ## Repo & Stack
 
 - **Repo:** `welshDog/Hyperfocus-Home-Page` (this repo)
@@ -45,9 +73,12 @@ These are real content assets. Do NOT ignore them or create placeholder content 
 
 ---
 
-## Build Order — Phase 1 First, Then Ask
+## Build Order — Historical Reference
 
-Build Phase 1 completely before moving to Phase 2. After each phase, stop and show what was built. Do not attempt to build all 5 phases in one go.
+This phased plan is the original build map and is now reference material.
+Do not restart from Phase 1 unless a human explicitly asks for rework.
+
+For current work, follow `AGENT-START.md` and the latest spec docs first.
 
 ### Phase 1 — Foundation
 1. Scaffold `src/app/` with App Router structure for all 8 public routes

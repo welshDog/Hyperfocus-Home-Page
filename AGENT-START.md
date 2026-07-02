@@ -25,47 +25,53 @@ Blog, Agents Lab, Subscribers.
 
 ---
 
-## ✅ SESSION HANDOFF — 2026-06-24
+## ✅ SESSION HANDOFF — 2026-07-01
 
 > **Read this before POLISH_SPRINT.md. This is ground truth.**
 
-### Task 1 — COMPLETE ✅
-- All 19 products priced, stocked, and active = true in Supabase
-- DB column is `active` (NOT `is_active` — the sprint doc is wrong, code is correct)
-- Categories in DB: `3D Prints`, `Mugs`, `Gifts`, `Bundles` (plural, mind the spelling)
-- Mug names have surrounding quotes in DB e.g. `"Hyperfocus Mode On" Mug`
-- Checkout queries `.eq('active', true)` — correct, no code change needed
+### Current Reality
+- `POLISH_SPRINT.md` is now historical reference, not the active starting point
+- Core shop/blog/admin work from the sprint is already shipped
+- Homepage footer playlist player is now live and working end to end
+- Supabase table `playlist_tracks` exists and the `music` storage bucket is live
+- Real playback bug was caused by `playlist_tracks.audio_path` not matching `storage.objects.name`
+- That path mismatch was fixed and playback now resolves correctly from Supabase Storage
 
-### Bundle Pricing Fixed ✅
-- Desk Setup Bundle: £31.99 (was £44.99 — was more expensive than parts separately)
-- Princess Vanity Bundle: £32.99 (was £39.99 — same issue)
-- Mug of Tee Bundle: mug + **t-shirt** (Teemill), NOT tea
+### Playlist Footer V1 — SHIPPED ✅
+- Compact footer player added without redesigning the page structure
+- Player reads published tracks from `playlist_tracks`
+- Player serves audio from Supabase Storage bucket `music`
+- No autoplay, compact controls, mobile-safe footer integration
+- Manual V1 workflow proved: upload file -> set exact `audio_path` -> publish track
 
-### Supabase Security Hardened ✅
-- `orders` RLS: public INSERT (status = 'pending' only), no SELECT for anon
-- `leads` RLS: public INSERT with email validation (not null, length > 3)
-- `subscribers` RLS: public INSERT with email validation (not null, length > 3)
-- `rls_auto_enable()` SECURITY DEFINER: EXECUTE revoked from anon + authenticated
-- FK index added on `orders.product_id`
-- Security advisors: 6 warnings → 1 remaining (leaked password protection — toggle in Auth dashboard)
+### New Ground Truth For Next Build
+- Source of truth for metadata: `public.playlist_tracks`
+- Source of truth for file existence: `storage.objects` in bucket `music`
+- Current approved next feature is **Admin-first playlist management with CLI audit guardrail**
+- Design spec already written:
+  - `docs/superpowers/specs/2026-07-01-playlist-admin-cli-audit-design.md`
 
-### Checkout / Orders Gap ⚠️
-- `app/api/checkout/route.ts` creates a Stripe session but does NOT insert into `orders`
-- There is no Stripe webhook yet — orders table will stay empty after real payments
-- Task 8 (below) covers this — do NOT attempt to fix in this sprint
-
-### Sprint Status
-- Task 1 ✅ DONE
-- Tasks 2–7 ⏳ NOT STARTED — ready to run
-- Task 8 📋 QUEUED — post-sprint
+### What To Build Next
+- Add `/admin/tracks`
+- Show track metadata and a `storage_exists` status badge
+- Allow editing `title`, `artist`, `audio_path`, `sort_order`, `is_published`
+- Add CLI audit script for path mismatch detection
+- Do **not** build upload UI, cover art management, or auto-fix logic in V1
 
 ---
 
 ## 🚦 Current Mission
 
-READ POLISH_SPRINT.md NEXT. That is the active task brief.
-Task 1 is done — start from **Task 2 (Homepage Featured Products Strip)**.
-Do not re-run Task 1. Do not touch products table pricing or activation.
+Read these in order:
+
+1. `AGENT-START.md` - this file
+2. `docs/superpowers/specs/2026-07-01-playlist-admin-cli-audit-design.md`
+3. `POLISH_SPRINT.md` only for historical context
+
+Do not restart the old sprint.
+Do not rebuild the footer player.
+Do not redesign the homepage layout.
+Continue from the playlist admin + CLI audit spec.
 
 ---
 
