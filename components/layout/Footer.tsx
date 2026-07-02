@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Github, Heart, Rocket, Orbit } from 'lucide-react'
 import { ListenWhileBrowse } from '@/components/layout/ListenWhileBrowse'
+import { FooterToolStack } from '@/components/layout/FooterToolStack'
 import { getHomepagePlaylistTracks } from '@/lib/playlist'
 
 const nav = [
@@ -76,6 +77,10 @@ export async function Footer() {
 
         <div className="mt-10">
           <ListenWhileBrowse tracks={tracks} />
+        </div>
+
+        <div className="mt-10">
+          <FooterToolStack />
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-black/5 dark:border-white/5 pt-6 sm:flex-row sm:items-center sm:justify-between">
