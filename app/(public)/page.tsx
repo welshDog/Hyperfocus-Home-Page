@@ -4,6 +4,7 @@ import { ButtonLink } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { getFeaturedProducts } from '@/lib/products'
+import { SponsorSection } from '@/components/SponsorSection'
 
 // Re-fetch featured products at most once a minute.
 export const revalidate = 60
@@ -22,24 +23,20 @@ export default async function HomePage() {
               Neurodivergent-first maker brand · South Wales
             </span>
           </p>
-
           <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
             Built for brains that{' '}
             <span className="text-brand dark:text-brand-200">
-              don&apos;t switch off
+              don't switch off
             </span>
             .
           </h1>
-
           <p className="mt-6 max-w-xl text-lg text-neutral-600 dark:text-neutral-300">
             Original 3D-printed gear, personalised gifts, and honest writing —
             plus the shop engine that powers it all, ready for you to own.
           </p>
-
           <p className="mt-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
             3D prints, mugs, gifts, and bundles made in South Wales.
           </p>
-
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/shop" size="lg">
               Shop Now
@@ -52,7 +49,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ──────────────────── Featured products ──────────────────── */}
+      {/* ────────────────── Featured products ────────────────── */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -101,7 +98,7 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
         <Card className="p-8 sm:p-12">
           <p className="text-xl font-medium leading-relaxed sm:text-2xl">
-            I&apos;m a dyslexic maker with ADHD. I don&apos;t do “off
+            I'm a dyslexic maker with ADHD. I don't do “off
             switches.” WelshDog is where that energy goes — real products,
             real story, no corporate fluff.
           </p>
@@ -114,6 +111,9 @@ export default async function HomePage() {
         </Card>
       </section>
 
+      {/* ─────────────────── Sponsor / Support ─────────────────── */}
+      <SponsorSection />
+
       {/* ─────────────────── White-label teaser ─────────────────── */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-24">
         <div className="rounded-2xl bg-brand px-6 py-12 text-white sm:px-12 sm:py-16">
@@ -123,7 +123,7 @@ export default async function HomePage() {
                 Want a shop like this?
               </h2>
               <p className="mt-2 text-white/85">
-                Own the engine. We&apos;ll set you up with the same stack —
+                Own the engine. We'll set you up with the same stack —
                 branded, wired for payments, and ready to sell.
               </p>
             </div>
