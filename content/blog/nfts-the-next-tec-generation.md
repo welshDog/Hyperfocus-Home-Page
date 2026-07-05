@@ -1,5 +1,5 @@
 ---
-title: NFT's The Next Tech Generation
+title: 'NFTs: The Next Tech Generation'
 slug: nfts-the-next-tec-generation
 date: '2024-09-17'
 category: Tech & AI
@@ -7,23 +7,13 @@ tags:
   - AI
   - tech
 excerpt: >-
-  Hyperfocus Mode Home Blog NFT'S The Next Tec Generation NFT'S The Next Tec
-  Generation WelshDog.NFT Navigating the World of NFTs: Transformation,
-  Challenges,…
+  Navigating the world of NFTs: how these unique digital assets are reshaping
+  ownership and creativity — plus the challenges and controversies nobody
+  should ignore.
 author: WelshDog (Lyndon Williams)
 source_url: 'https://hyperfocus-mode.teemill.com/blog/nfts-the-next-tec-generation/'
 date_inferred: true
 ---
-
-Hyperfocus Mode Home
-
-Blog
-
-NFT'S The Next Tec Generation
-
-NFT'S The Next Tec Generation
-
-WelshDog.NFT
 
 Navigating the World of NFTs: Transformation, Challenges, and Controversies
 

@@ -6,22 +6,15 @@ category: Tech & AI
 tags:
   - AI
   - tech
-excerpt: "Hyperfocus Mode Home Blog Vibe Code: From Intuition to AI and the Hyperfocus Future \U0001F31F Vibe Code: From Intuition to AI and the Hyperfocus Future \U0001F31F Vibe Code:…"
+excerpt: >-
+  Vibe coding marks the evolution toward intuitive, AI-augmented programming —
+  perfectly aligned with neurodivergent strengths like hyperfocus. Where the
+  term came from and where it's going.
 author: WelshDog (Lyndon Williams)
 source_url: >-
   https://hyperfocus-mode.teemill.com/blog/vibe-code-from-intuition-to-ai-and-the-hyperfocus-future/
 date_inferred: true
 ---
-
-Hyperfocus Mode Home
-
-Blog
-
-Vibe Code: From Intuition to AI and the Hyperfocus Future 🌟
-
-Vibe Code: From Intuition to AI and the Hyperfocus Future 🌟
-
-Vibe Code: From Intuition to AI and the Hyperfocus Future 🌟
 
 Main Takeaway
 
@@ -118,5 +111,3 @@ For the Industry
 4. Inclusive Innovation: Democratizing coding through natural language and hyperfocus-friendly tools empowers diverse voices.
 
 ✨ Let’s ride the vibe wave and code the future—together!
-
-Nice one,

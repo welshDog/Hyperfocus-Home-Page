@@ -1,12 +1,14 @@
 ---
-title: What is Cryptocurrencies (Do You Really Know)
+title: 'What Are Cryptocurrencies, Really?'
 slug: https-cryptocurrencyfacts-com-how-does-cryptocurrency-work-for-beginners
 date: '2024-11-06'
 category: Tech & AI
 tags:
   - AI
   - tech
-excerpt: "ITs A Good Read Only if Your Really Want too https://cryptocurrencyfacts.com/how-does-cryptocurrency-work-for-beginners/ \U0001F910Only you can Decide Its Your Money…"
+excerpt: >-
+  My honest take on crypto for beginners: read about it first, trust nothing
+  that smells funny, and never give coin to anyone who chases you for it.
 author: WelshDog (Lyndon Williams)
 source_url: >-
   https://hyperfocus-mode.teemill.com/blog/https-cryptocurrencyfacts-com-how-does-cryptocurrency-work-for-beginners/
