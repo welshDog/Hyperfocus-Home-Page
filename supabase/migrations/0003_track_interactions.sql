@@ -16,7 +16,12 @@ drop policy if exists "track_likes: public read" on public.track_likes;
 create policy "track_likes: public read"
   on public.track_likes for select
   to anon, authenticated
-  using (true);
+  using (
+    exists (
+      select 1 from public.playlist_tracks t
+      where t.id = track_likes.track_id and t.is_published = true
+    )
+  );
 -- No insert/update/delete policies: all writes go through toggle_track_like().
 
 -- ── track_comments: public read non-hidden; anon insert on published tracks ──
