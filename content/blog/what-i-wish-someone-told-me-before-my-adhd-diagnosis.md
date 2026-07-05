@@ -1,7 +1,7 @@
 ---
 title: 'Diagnosed After 40: What I Wish Someone Had Told Me at 20'
 slug: what-i-wish-someone-told-me-before-my-adhd-diagnosis
-date: '2026-07-05'
+date: '2026-07-04'
 category: ADHD & Neurodiversity
 tags:
   - ADHD
