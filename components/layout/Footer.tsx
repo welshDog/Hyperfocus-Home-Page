@@ -7,6 +7,7 @@ import { getHomepagePlaylistTracks } from '@/lib/playlist'
 const nav = [
   { href: '/shop', label: 'Shop' },
   { href: '/blog', label: 'Blog' },
+  { href: '/music', label: 'Music' },
   { href: '/about', label: 'About' },
   { href: '/white-label', label: 'White-Label' },
   { href: '/contact', label: 'Contact' },

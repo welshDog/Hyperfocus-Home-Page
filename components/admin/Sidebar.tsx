@@ -10,6 +10,7 @@ import {
   FileText,
   Bot,
   Mail,
+  MessageSquare,
   Music,
   Terminal,
 } from 'lucide-react'
@@ -23,6 +24,7 @@ const nav = [
   { href: '/admin/leads', label: 'Leads', Icon: Inbox, badgeKey: 'leads' },
   { href: '/admin/blog', label: 'Blog', Icon: FileText },
   { href: '/admin/tracks', label: 'Tracks', Icon: Music },
+  { href: '/admin/comments', label: 'Comments', Icon: MessageSquare },
   { href: '/admin/agents', label: 'Agents Lab', Icon: Bot },
   { href: '/admin/subscribers', label: 'Subscribers', Icon: Mail },
 ]

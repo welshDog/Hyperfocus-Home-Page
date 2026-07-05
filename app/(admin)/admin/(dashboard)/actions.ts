@@ -246,3 +246,25 @@ export async function toggleTrackPublished(formData: FormData): Promise<void> {
   revalidatePath('/admin/tracks')
   revalidatePath('/', 'layout')
 }
+
+// ───────────────────────── Track comments ─────────────────────────
+export async function toggleCommentHidden(formData: FormData): Promise<void> {
+  await requireAdmin()
+  const id = formData.get('id') as string
+  const next = formData.get('next') === 'true'
+  if (!id) return
+  const admin = createAdminClient()
+  await admin.from('track_comments').update({ is_hidden: next }).eq('id', id)
+  revalidatePath('/admin/comments')
+  revalidatePath('/music')
+}
+
+export async function deleteComment(formData: FormData): Promise<void> {
+  await requireAdmin()
+  const id = formData.get('id') as string
+  if (!id) return
+  const admin = createAdminClient()
+  await admin.from('track_comments').delete().eq('id', id)
+  revalidatePath('/admin/comments')
+  revalidatePath('/music')
+}

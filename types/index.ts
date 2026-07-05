@@ -96,3 +96,25 @@ export interface PlaylistTrack {
 /** Admin view of a track — DB row plus whether the referenced file
  *  actually exists in the `music` Storage bucket. */
 export type AdminPlaylistTrack = PlaylistTrack & { storage_exists: boolean }
+
+export interface TrackComment {
+  id: string
+  track_id: string
+  /** Client-generated device UUID — anonymous, not a user id. */
+  anon_id: string
+  display_name: string
+  body: string
+  is_hidden: boolean
+  created_at: string
+}
+
+/** Admin view of a comment — row plus its track title for the moderation table. */
+export type AdminTrackComment = TrackComment & { track_title: string }
+
+/** Row shape of the `track_public_stats` view (published tracks only). */
+export interface TrackPublicStats {
+  track_id: string
+  like_count: number
+  comment_count: number
+  play_count: number
+}
