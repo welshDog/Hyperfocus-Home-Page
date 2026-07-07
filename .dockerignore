@@ -1,38 +1,72 @@
+# ============================================================
+# .dockerignore — Hyperfocus Home Page
+# Pattern: HS-137 DOCKER SOVEREIGN (2026 Best Practices)
+# Exclude everything not needed in the production Docker build context
+# ============================================================
+
+# ── Dependencies ─────────────────────────────────────────
+# Reinstalled fresh via npm ci in builder stage
 node_modules
-npm-debug.log
-.env
-.env.local
-.env.*.local
+.npm
+npm-debug.log*
+yarn-error.log*
+
+# ── Build Outputs ────────────────────────────────────────
+# Rebuilt in Docker builder stage — keep build context lean
 .next
+out
+dist
+
+# ── Dev Tooling ──────────────────────────────────────────
+.vscode
+.idea
+*.log
+
+# ── Git ──────────────────────────────────────────────────
+# Not needed inside image — reduces context size
 .git
 .gitignore
-.DS_Store
-.vercel
+.gitattributes
 .github
-_legacy
-.shots
-tests
-.eslintrc.cjs
-tsconfig.json
-next.config.js
-postcss.config.ts
-tailwind.config.ts
-vercel.json
+
+# ── Environment Files ────────────────────────────────────
+# NEVER include env files in Docker image — inject at runtime
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env*.local
+
+# ── Test Suites ──────────────────────────────────────────
+# Not needed in production runtime
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+coverage
+
+# ── Documentation ────────────────────────────────────────
 README.md
-CLAUDE.md
-POLISH_SPRINT.md
-WELSHDOG-SHOP-PLAN.md
+CHANGELOG.md
 docs
-scripts
-logs
-supabase
-tools
-types
-content/blog
-.hyper
-.claude
-AGENT-START.md
-blogpost-entries.csv
-dev-server.log
-the idea
-index.html
+docs/superpowers/specs
+
+# ── Dev / CI Dockerfiles ─────────────────────────────────
+Dockerfile.dev
+docker-compose*.yml
+docker-compose*.yaml
+
+# ── Supabase Local ───────────────────────────────────────
+supabase/.temp
+supabase/.branches
+
+# ── Legacy / Archive ─────────────────────────────────────
+_legacy
+
+# ── Misc ─────────────────────────────────────────────────
+*.md
+!README.md
+.DS_Store
+Thumbs.db
