@@ -1,0 +1,12 @@
+# HyperFocus Z0ne repo manifest - read by scripts/gen_repo_map.py
+# Edit this file, then re-run the generator. Never hand-edit the map.
+
+name: "Hyperfocus-Home-Page"
+emoji: "🛒"
+tagline: "**welshdog.shop — the REAL live shop** (46 products, music social, blog, /admin)"
+category: "web"
+stack: "Next 15.5 + Supabase (jnrk) + Stripe-test"
+first_doc: "CLAUDE.md"
+tier: "LIVE"
+url: "https://welshdog.shop"
+notes: "DDL is dashboard-only — MCP/CLI can't touch jnrk. Stay on Next 15.x"
