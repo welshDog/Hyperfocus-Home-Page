@@ -1,85 +1,109 @@
 # 🐕 AGENT-START.md — WelshDog Designs
+
 ## Boot file for Claude Code & all AI agents
 
-**Repo:** welshDog/Hyperfocus-Home-Page  
-**Live site:** https://welshdog.shop  
-**Stack:** Next.js 15.5.19 / Supabase / Vercel  
-**Branch:** main  
-**Owner:** Lyndon Williams — Llanelli, South Wales 🏴󠁧󠁢󠁷󠁬󠁳󠁥  
+**Repo:** welshDog/Hyperfocus-Home-Page
+**Live site:** https://welshdog.shop
+**Stack:** Next.js 15.5.19 (App Router) / Supabase / Vercel / Docker (standalone)
+**Branch:** main
+**Owner:** Lyndon Williams — Llanelli, South Wales 🏴󠁧󠁢󠁷󠁬󠁳󠁥
 **Tone:** Neurodivergent-first. Playful. Honest. Zero corporate fluff.
 
 ---
 
 ## 🧠 What This Repo Is
 
-WelshDog Designs — a neurodivergent-first shop, blog, and white-label 
-service platform. Built for brains that don't switch off.
+WelshDog Designs — a neurodivergent-first shop, blog, music page, and
+white-label service platform. Built for brains that don't switch off.
 
-Three lanes:
-1. Shop — 3D prints, mugs, gifts, bundles (Supabase products)
-2. Blog — honest writing on ADHD, dyslexia, creativity, tech
-3. White-label — the full shop engine, available for others to own
+Four lanes:
 
-Admin lives at /admin — Mission Control with Products, Orders, Leads,
-Blog, Agents Lab, Subscribers.
+1. **Shop** — 3D prints, mugs, gifts, bundles, apparel (Supabase `products`)
+2. **Blog** — honest writing on ADHD, dyslexia, creativity, tech
+3. **Music** — `/music` page: footer player + likes / comments / play counts
+4. **White-label** — the full shop engine, available for others to own
 
----
-
-## ✅ SESSION HANDOFF — 2026-07-01
-
-> **Read this before POLISH_SPRINT.md. This is ground truth.**
-
-### Current Reality
-- `POLISH_SPRINT.md` is now historical reference, not the active starting point
-- Core shop/blog/admin work from the sprint is already shipped
-- Homepage footer playlist player is now live and working end to end
-- Supabase table `playlist_tracks` exists and the `music` storage bucket is live
-- Real playback bug was caused by `playlist_tracks.audio_path` not matching `storage.objects.name`
-- That path mismatch was fixed and playback now resolves correctly from Supabase Storage
-
-### Playlist Footer V1 — SHIPPED ✅
-- Compact footer player added without redesigning the page structure
-- Player reads published tracks from `playlist_tracks`
-- Player serves audio from Supabase Storage bucket `music`
-- No autoplay, compact controls, mobile-safe footer integration
-- Manual V1 workflow proved: upload file -> set exact `audio_path` -> publish track
-
-### New Ground Truth For Next Build
-- Source of truth for metadata: `public.playlist_tracks`
-- Source of truth for file existence: `storage.objects` in bucket `music`
-- Current approved next feature is **Admin-first playlist management with CLI audit guardrail**
-- Design spec already written:
-  - `docs/superpowers/specs/2026-07-01-playlist-admin-cli-audit-design.md`
-
-### Playlist Admin + CLI Audit V1 — SHIPPED ✅ (2026-07-02)
-- `/admin/tracks` live in Mission Control (Tracks in sidebar): table of all
-  tracks with `storage_exists` badge (OK / Missing), inline add + edit for
-  `title`, `artist`, `audio_path`, `sort_order`, `is_published`
-- CLI guardrail: `npm run audit:playlist` (`scripts/audit-playlist-paths.mjs`)
-  reports Matched / Missing / Unused, `--sql` prints safe UPDATE suggestions
-  (never applies them), exits 1 on missing files so it can gate deploys
-- Per spec, V1 deliberately has NO upload UI, cover art, or auto-fix logic
-
-### What To Build Next
-- No approved next feature yet — ask the human before starting anything new
-- Spec'd nice-to-haves (NOT approved): uploader in `/admin/tracks`, cover art,
-  import-from-storage helper, pre-deploy audit hook in CI
+Admin ("Mission Control") lives under the `(admin)` route group — see
+[Key Files](#-key-files--folders) for the real on-disk path.
 
 ---
 
-## 🚦 Current Mission
+## ✅ GROUND TRUTH — verified live 2026-09-06
 
-Read these in order:
+> This replaces the old 2026-07 session handoff. Checked against the live
+> Supabase project `jnrkrnzeqeupjumkvobz` and the deployed site.
 
-1. `AGENT-START.md` - this file
-2. `docs/superpowers/specs/2026-07-01-playlist-admin-cli-audit-design.md`
-3. `POLISH_SPRINT.md` only for historical context
+### The shop is live and populated — it is NOT a placeholder
 
-Do not restart the old sprint.
-Do not rebuild the footer player.
-Do not redesign the homepage layout.
-The playlist admin + CLI audit spec is SHIPPED (2026-07-02) — do not rebuild it.
-Ask the human what's next before starting new features.
+- **46 products in the DB** — 37 active, 9 inactive drafts
+- All **27 apparel items** (caps, hoodies, tees, "Mug of Tee" range) are
+  imported and active, priced £19–£45
+- The original 19 lines (3D prints, mugs, gifts, bundles) are in with real
+  £ prices (£4.99–£31.99)
+- `supabase/seed.sql` is a **historical draft that was never run** — the real
+  catalogue was built through Mission Control + the bulk importer. Do not
+  treat `seed.sql` as the source of truth; the DB is.
+
+### Mission Control works — you can add products through the UI
+
+- Login: Supabase Auth (email + password). Admin = any email in the
+  `ADMIN_EMAILS` env allowlist. `lyndzwills@gmail.com` is set up, confirmed,
+  and has signed in recently.
+- Add a product: `/admin/products` → **Add product** → fill the form → Save.
+  The `saveProduct` server action inserts the row and uploads images to the
+  `product-images` Storage bucket (exists, 5MB/image, PNG/JPG/WebP/AVIF/GIF).
+- Bulk import: `/admin/products` → **Import** button → `ImportWizard`.
+  Backed by `tools/hyper-import/` — 11 platform importers (CSV, Etsy, product
+  feed, Gumroad, JSON-LD, Printful, Printify, Shopify, Squarespace, Teemill,
+  WooCommerce).
+- New products default to `active = false`. Set price + stock, then flip
+  **Active** to publish to the shop.
+
+### Schema drift — the live DB is AHEAD of `supabase/migrations/`
+
+Migrations stop at `0003`. The live DB additionally has (added via the
+Supabase dashboard, never captured as a migration):
+
+- `products.external_url` — external buy link (e.g. Teemill); when set, the
+  shop links out instead of running Stripe checkout
+- `products.teemill_variant_id` — variant to fulfil when sold via our Stripe
+- `orders.amount`, `orders.fulfilled`, `orders.teemill_order_id`
+- `orders.status` CHECK also allows `needs_fulfilment`
+- Storage buckets `product-images` and `music`
+
+If you ever rebuild this DB from `supabase/migrations/`, it will be missing
+all of the above and Mission Control will break. Capture these as `0004_*`
+before any rebuild. **Do not rebuild the live DB** — it is healthy and
+holds real orders/catalogue.
+
+### Other current state
+
+- **Next.js:** 15.5.19. Commit `ed58dd1` tried v16 — rolled back, we are on
+  15.x. (`next.config.js` has a duplicate `output: 'standalone'` line —
+  harmless, worth tidying.)
+- **Docker:** `Dockerfile` + `.dockerignore` + `output: 'standalone'` — prod
+  image ~140MB.
+- **Blog:** 32 markdown files in `content/`, 2 rows in `blog_posts` (DB
+  drafts). File-based posts are the main content path.
+- **Music:** 8 rows in `playlist_tracks`, `music` bucket live. Managed at
+  `/admin/tracks`; comment moderation at `/admin/comments`.
+- **Sponsorship:** `SponsorSection` component + `FUNDING.yml`.
+- `.hyperfocus.yml` ecosystem manifest added 2026-07-18.
+
+---
+
+## 🚦 What To Build Next
+
+**No approved next feature. Ask Lyndz before starting anything new.**
+
+Known loose ends (NOT approved — flag, don't just do):
+
+- Capture the schema drift above as `supabase/migrations/0004_*.sql`
+- `README.md` is badly stale (wrong routes, "Printful shop", old blog count)
+- `.env.local.example` says `welshdog.designs` — the live site is
+  `welshdog.shop` (`NEXT_PUBLIC_SITE_URL` is already correct in `.env.local`)
+- `supabase/seed.sql` header still says "NOT YET RUN / 19 products" — either
+  delete it or rewrite it to reflect the 46 live rows
 
 ---
 
@@ -133,24 +157,29 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 ### Post-task hook (always)
 - Run REALITY ANCHOR (HS-108) — verify task actually did what it claimed
 - Run THE MIRROR OATH (HS-088) — 8-point self-audit
-- Only then mark the task done in POLISH_SPRINT.md
+- Only then mark the task done
 
 ### Scope hook (always)
-- If a task would touch more than 3 files not listed in POLISH_SPRINT.md — STOP
+- If a task would touch more than 3 files beyond the agreed scope — STOP
 - Ask the human before proceeding (TRIM LORD, HS-110)
 
 ---
 
 ## 🚫 Hard Rules — Never Break These
 
-- Next.js stays on 15.x (currently 15.5.19, upgraded from 14 in the 2026-06 security audit) — NO major upgrades without explicit human sign-off, and NEVER downgrade back to 14
-- Frontmatter parsing uses the `yaml` package + local parser — gray-matter was REMOVED for security (unmaintained, js-yaml vulns). Never reintroduce it
-- Never commit .env files — not even .env.example with real values
-- Never drop or recreate Supabase tables — use existing schema + RLS
+- Next.js stays on 15.x (currently 15.5.19, upgraded from 14 in the 2026-06
+  security audit) — NO major upgrades without explicit human sign-off, and
+  NEVER downgrade back to 14
+- Frontmatter parsing uses the `yaml` package + local parser — gray-matter
+  was REMOVED for security (unmaintained, js-yaml vulns). Never reintroduce it
+- Never commit `.env` files — not even `.env.local.example` with real values
+- Never drop or recreate Supabase tables — the live DB holds real orders and
+  the 46-product catalogue. Additive `alter table … add column if not exists`
+  only, plus RLS
 - Never push directly to main without running the pre-commit hook
 - Never activate a product or change a price without explicit human mapping
 - Never redesign layouts — polish only, no rewrites
-- showcase-web is a DIFFERENT repo — do not confuse the two
+- `showcase-web` is a DIFFERENT repo — do not confuse the two
 - `active` is the correct column name — NEVER use `is_active`
 
 ---
@@ -159,15 +188,29 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 
 | Path | What it is |
 |---|---|
-| POLISH_SPRINT.md | Historical sprint brief — reference only |
-| app/ | Next.js 15 app router pages |
-| components/ | Shared UI components |
-| content/ | Blog MDX/markdown files |
-| lib/ | Supabase client + helpers |
-| supabase/ | DB types + migrations |
-| types/ | TypeScript types |
-| public/ | Static assets |
-| .env.local.example | Env var template — never commit real values |
+| `app/(public)/` | Public pages: `/`, `shop`, `blog`, `music`, `about`, `contact`, `white-label` |
+| `app/(admin)/admin/(dashboard)/` | Mission Control pages (products, orders, leads, blog, agents, tracks, comments, subscribers) |
+| `app/(admin)/admin/(dashboard)/actions.ts` | Server actions — `saveProduct`, `toggleProductActive`, order/blog/track mutations |
+| `app/(admin)/admin/login/` | Supabase Auth login (`LoginForm`) |
+| `app/api/` | Route handlers: `checkout`, `webhooks/stripe`, `leads`, `subscribe`, `tracks/*`, `og` |
+| `middleware.ts` | Refreshes Supabase session, blocks anon `/admin` access |
+| `lib/supabase.ts` | `createServerClient` (anon reads) + `createAdminClient` (service role) |
+| `lib/supabase/{client,server}.ts` | SSR auth clients |
+| `lib/admin.ts` | `requireAdmin()` — allowlist gate via `ADMIN_EMAILS` |
+| `lib/products.ts` | Public shop queries + `SHOP_CATEGORIES` |
+| `components/admin/` | Admin UI — `ProductForm`, `Sidebar`, tables, `AgentsLab` |
+| `tools/hyper-import/` | Bulk product importer — 11 platform adapters, `ImportWizard` |
+| `supabase/migrations/` | `0001` init · `0002` playlist_tracks · `0003` track_interactions (⚠️ live DB is ahead — see Ground Truth) |
+| `supabase/seed.sql` | Historical draft — NEVER run against live |
+| `content/` | Blog markdown (32 files) |
+| `exports/teemill-products.json` | 27-product Teemill feed snapshot (already imported) |
+| `types/index.ts` | Shared domain types — mirrors the LIVE schema, not the migrations |
+| `.env.local.example` | Env template — never commit real values |
+| `WELSHDOG-SHOP-PLAN.md` | Original master plan — reference only |
+| `POLISH_SPRINT.md` | 2026-06/07 sprint brief — historical, shipped |
+
+### Categories (`SHOP_CATEGORIES` / `ProductCategory`)
+`3D Prints` · `Mugs` · `Gifts` · `Bundles` · `Apparel`
 
 ---
 
@@ -175,7 +218,7 @@ Vault: github.com/welshDog/HYPER-SILLs-By-WelshDog
 
 You are working on a project built by a neurodivergent maker in South Wales.
 The voice is warm, honest, direct, and real.
-Every message a user sees — empty states, errors, toasts, copy — must feel 
+Every message a user sees — empty states, errors, toasts, copy — must feel
 like it was written by a human who gets it, not a corporate chatbot.
 
 When in doubt: be kind, be clear, be useful. That's the WelshDog way.
