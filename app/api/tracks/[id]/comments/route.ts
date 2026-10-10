@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { checkRateLimit } from '@/lib/rateLimit'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 import { createServerClient } from '@/lib/supabase'
 import type { TrackComment } from '@/types'
 
@@ -117,7 +117,11 @@ export async function POST(
     )
   }
 
-  if (!checkRateLimit(`comment:${anonId}`, MAX_PER_WINDOW, WINDOW_MS)) {
+  // anonId is client-chosen, so also bucket by IP (3x headroom for shared NATs).
+  const allowed =
+    (await checkRateLimit(`comment:${anonId}`, MAX_PER_WINDOW, WINDOW_MS)) &&
+    (await checkRateLimit(`comment-ip:${clientIp(req)}`, MAX_PER_WINDOW * 3, WINDOW_MS))
+  if (!allowed) {
     return NextResponse.json(
       { error: 'Slow down a little — try again in a few minutes.' },
       { status: 429 },

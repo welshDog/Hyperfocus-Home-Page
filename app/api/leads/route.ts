@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 import { sendLeadConfirmation } from '@/lib/email'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const TIERS = ['Starter', 'Pro', 'Done For You', 'Not sure yet']
 
 export async function POST(req: Request) {
+  if (!(await checkRateLimit(`leads-ip:${clientIp(req)}`, 5, 10 * 60_000))) {
+    return NextResponse.json(
+      { error: 'Too many requests — please try again in a few minutes.' },
+      { status: 429 },
+    )
+  }
+
   let payload: Record<string, unknown>
   try {
     payload = await req.json()
