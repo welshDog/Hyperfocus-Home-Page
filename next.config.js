@@ -4,7 +4,6 @@ const nextConfig = {
   // Eliminates 200MB+ of build tooling from production image (~140MB final)
   output: 'standalone',
 
-  output: 'standalone',
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '*.supabase.co' },
