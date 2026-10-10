@@ -22,7 +22,7 @@ export async function POST(
 
   const limiterKey =
     typeof anonId === 'string' && UUID_RE.test(anonId) ? anonId : 'unknown'
-  if (!checkRateLimit(`play:${limiterKey}`, 60, 60_000)) {
+  if (!(await checkRateLimit(`play:${limiterKey}`, 60, 60_000))) {
     return NextResponse.json({ ok: true })
   }
 

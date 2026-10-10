@@ -21,7 +21,7 @@ export async function POST(
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
   }
 
-  if (!checkRateLimit(`like:${anonId}`, 30, 60_000)) {
+  if (!(await checkRateLimit(`like:${anonId}`, 30, 60_000))) {
     return NextResponse.json(
       { error: 'Slow down a little — try again in a minute.' },
       { status: 429 },
