@@ -7,6 +7,30 @@ import { createAdminClient } from '@/lib/supabase'
 
 export type FormState = { error?: string } | undefined
 
+type DbError = { code?: string; message?: string; details?: string; hint?: string }
+
+const DB_HINTS: Record<string, string> = {
+  '22P02': 'a value is in the wrong format',
+  '22003': 'a number is out of range',
+  '23502': 'a required field is empty',
+  '23514': "a value breaks a rule (price and stock can't be negative)",
+  '42501': 'the database refused permission (check the service-role key)',
+}
+
+/** Logs the real database error (so it shows up in Vercel logs) and returns an
+ *  admin-facing message that says why, with the code — instead of a bare
+ *  "Could not save". Admin-only UI, so showing the code is fine. */
+function dbFailure(where: string, error: DbError, fallback: string): string {
+  console.error(`[admin] ${where} failed`, {
+    code: error.code,
+    message: error.message,
+    details: error.details,
+    hint: error.hint,
+  })
+  const why = error.code ? DB_HINTS[error.code] : undefined
+  return `${fallback}${why ? ` — ${why}` : ''} (code ${error.code ?? 'unknown'})`
+}
+
 function slugify(s: string): string {
   return s
     .toLowerCase()
@@ -96,7 +120,7 @@ export async function saveProduct(
       error:
         error.code === '23505'
           ? 'That slug is already taken.'
-          : 'Could not save product.',
+          : dbFailure('saveProduct', error, 'Could not save product'),
     }
   }
 
@@ -165,7 +189,9 @@ export async function createDraft(
   if (error) {
     return {
       error:
-        error.code === '23505' ? 'That slug already exists.' : 'Could not save draft.',
+        error.code === '23505'
+          ? 'That slug already exists.'
+          : dbFailure('createDraft', error, 'Could not save draft'),
     }
   }
 
@@ -229,7 +255,7 @@ export async function saveTrack(
     ? await admin.from('playlist_tracks').update(row).eq('id', id)
     : await admin.from('playlist_tracks').insert(row)
 
-  if (error) return { error: 'Could not save the track. Give it another go.' }
+  if (error) return { error: dbFailure('saveTrack', error, 'Could not save the track') }
 
   revalidatePath('/admin/tracks')
   revalidatePath('/', 'layout') // footer player lives in the shared layout
